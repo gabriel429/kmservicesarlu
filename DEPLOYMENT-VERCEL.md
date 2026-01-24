@@ -32,8 +32,9 @@ Ce projet PHP peut être déployé sur Vercel en utilisant le runtime communauta
    ```
 
 4. **Migrer la base de données**
-   - Importez vos schémas MySQL vers Postgres (adapter types & AUTO_INCREMENT → SERIAL, etc.).
-   - Supabase fournit un client SQL et une console pour exécuter vos scripts.
+   - Utilisez le script Postgres fourni: `database/schema_postgres.sql` (coller dans Supabase → SQL Editor → Run).
+   - Si vous partez de MySQL, adaptez vos schémas (types, identités, contraintes) ou prenez ce script comme base.
+   - Supabase fournit un SQL Editor et un pool de connexion; pas de `CREATE DATABASE` nécessaire.
 
 5. **Configurer le bucket Storage**
     - Dans Supabase → Storage, créez un bucket (ex: `uploads`).
