@@ -7,8 +7,8 @@
 // Démarrage de la session
 session_start();
 
-// Inclusion des fichiers de configuration
-require_once '../config/config.php';
+// Inclusion des fichiers de configuration (chemin absolu)
+require_once __DIR__ . '/../config/config.php';
 
 // Inclusion des classes principales
 require_once BASE_PATH . 'app/Database.php';
