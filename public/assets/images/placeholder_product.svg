@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gp" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e5e7eb"/>
+      <stop offset="100%" stop-color="#f3f4f6"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="800" height="450" fill="url(#gp)"/>
+  <g fill="#9ca3af">
+    <rect x="260" y="120" width="280" height="210" rx="20" fill="#ffffff" opacity="0.6"/>
+    <rect x="290" y="150" width="220" height="150" rx="12" fill="#d1d5db"/>
+  </g>
+  <g fill="#6b7280" font-family="Segoe UI, Inter, Arial, sans-serif" text-anchor="middle">
+    <text x="400" y="330" font-size="18">Image produit indisponible</text>
+  </g>
+</svg>

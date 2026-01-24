@@ -1,0 +1,118 @@
+<?php
+/**
+ * Tableau de Bord Admin
+ */
+?>
+
+<div class="stats-container">
+    <?php
+    try {
+        $projectCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM projects");
+        $productCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM products");
+        $contactCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM contacts WHERE statut = 'nouveau'");
+        $orderCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM orders WHERE statut = 'nouvelle'");
+    } catch (Exception $e) {
+        $projectCount = ['count' => 0];
+        $productCount = ['count' => 0];
+        $contactCount = ['count' => 0];
+        $orderCount = ['count' => 0];
+    }
+    $role = $_SESSION['admin_role'] ?? 'editor';
+    ?>
+    <?php if ($role === 'admin'): ?>
+        <div class="stat-card">
+            <h3><?php echo $projectCount['count'] ?? 0; ?></h3>
+            <p>Projets</p>
+        </div>
+    <?php endif; ?>
+    
+    <div class="stat-card">
+        <h3><?php echo $productCount['count'] ?? 0; ?></h3>
+        <p>Produits</p>
+    </div>
+    
+    <div class="stat-card">
+        <h3><?php echo $contactCount['count'] ?? 0; ?></h3>
+        <p>Nouveaux Messages</p>
+    </div>
+    
+    <div class="stat-card">
+        <h3><?php echo $orderCount['count'] ?? 0; ?></h3>
+        <p>Commandes en attente</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Bienvenue au Tableau de Bord Admin</h2>
+    <p>Utilisez le menu latéral pour accéder aux différentes sections de gestion du site.</p>
+    <ul>
+        <?php if ($role === 'admin'): ?>
+            <li><a href="<?php echo APP_URL; ?>admin/projets">Gérer les Projets</a></li>
+        <?php endif; ?>
+        <li><a href="<?php echo APP_URL; ?>admin/produits">Gérer les Produits</a></li>
+        <li><a href="<?php echo APP_URL; ?>admin/contacts">Consulter les Messages</a></li>
+        <li><a href="<?php echo APP_URL; ?>admin/commandes">Voir les Commandes</a></li>
+    </ul>
+</div>
+
+<style>
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .card {
+        margin-top: 1rem;
+    }
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        margin: 0.5rem 0;
+    }
+    .form-row input {
+        flex: 1;
+    }
+</style>
+
+<div class="card">
+    <h3>Réinitialiser le mot de passe utilisateur</h3>
+    <?php if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] === 'admin'): ?>
+        <p>Saisissez le nom d'utilisateur (ou email) et le nouveau mot de passe.</p>
+        <form id="resetPwdForm">
+            <div class="form-row">
+                <input type="text" name="identifier" placeholder="Username ou Email" required />
+                <input type="password" name="password" placeholder="Nouveau mot de passe" required />
+            </div>
+            <button type="submit">Réinitialiser</button>
+        </form>
+        <p id="resetPwdMsg" style="margin-top:0.5rem;"></p>
+    <?php else: ?>
+        <p style="color:#b00;">Accès restreint: réservé aux administrateurs.</p>
+    <?php endif; ?>
+</div>
+
+<script>
+document.getElementById('resetPwdForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const msg = document.getElementById('resetPwdMsg');
+    msg.textContent = 'Traitement en cours...';
+    try {
+        const fd = new FormData(form);
+        fd.append('action', 'reset_password');
+        const res = await fetch('<?php echo APP_URL; ?>handlers/crud_users.php', {
+            method: 'POST',
+            body: fd
+        });
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch { data = { success:false, message:'Réponse invalide' }; }
+        msg.textContent = data.success ? 'Succès: ' + (data.message || 'Mot de passe réinitialisé')
+                                       : 'Erreur: ' + (data.message || 'Impossible de réinitialiser');
+        if (data.success) form.reset();
+    } catch (err) {
+        msg.textContent = 'Erreur réseau: ' + err.message;
+    }
+});
+</script>
