@@ -1,5 +1,9 @@
 # KM Services - Site Web Corporatif
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/gabriel429/kmservices)
+
+Déploiement serverless via Vercel (runtime PHP) et base de données Supabase (Postgres). Voir aussi [DEPLOYMENT-VERCEL.md](DEPLOYMENT-VERCEL.md).
+
 Site web moderne pour KM Services, plateforme de présentation et vente en ligne de services de construction et forage.
 
 ## 📋 Vue d'ensemble
@@ -13,11 +17,25 @@ KM Services est une application web PHP permettant à KM Services de :
 
 ## 🚀 Démarrage Rapide
 
-### Prérequis
-- **PHP** 7.4+ 
-- **MySQL** 8.0+
-- **Apache** avec mod_rewrite activé
-- Environnement WAMP, LAMP ou XAMPP
+### Prérequis (local)
+- **PHP** 8.1+ 
+- **MySQL** 8.0+ (ou **Postgres** pour Supabase)
+- Serveur local (WAMP, LAMP, XAMPP) ou `php -S`
+
+### Déploiement (Vercel + Supabase)
+1. Créez un projet Vercel et configurez les variables d'environnement:
+   - `DB_DRIVER=pgsql`
+   - `DB_HOST`, `DB_PORT=5432`, `DB_NAME`, `DB_USER`, `DB_PASS`
+   - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_BUCKET=uploads`
+   - Optionnel: `APP_URL` (sinon auto via `VERCEL_URL`)
+2. Lancez un déploiement:
+   ```bash
+   npm i -g vercel
+   vercel login
+   vercel
+   vercel --prod
+   ```
+3. Configurez le bucket Storage Supabase (public read) et vérifiez les formulaires d'upload.
 
 ### Installation
 
@@ -59,13 +77,16 @@ Mot de passe : password
 kmservices/
 ├── app/                    # Classes PHP principales
 │   ├── Database.php       # Gestion de la base de données
+│   ├── MySQL.php          # Utilitaires DB (PDO, MySQL/Postgres)
 │   └── Router.php         # Routeur simple
+│   └── Supabase.php       # Client minimal Supabase Storage
 ├── config/                # Fichiers de configuration
 │   └── config.php         # Configuration générale
 ├── database/              # Scripts de base de données
 │   └── schema.sql         # Schéma et données initiales
 ├── public/                # Fichiers accessibles publiquement
 │   ├── index.php         # Point d'entrée principal
+│   ├── img.php           # Redimensionnement d'images (local/URL Supabase)
 │   ├── assets/
 │   │   ├── css/
 │   │   │   └── style.css  # Styles CSS
@@ -90,6 +111,7 @@ kmservices/
 │       └── login.php     # Formulaire de connexion
 ├── .htaccess             # Configuration Apache
 └── README.md             # Ce fichier
+└── DEPLOYMENT-VERCEL.md  # Guide Vercel/Supabase
 ```
 
 ## 🛠️ Fonctionnalités
@@ -215,9 +237,8 @@ Remplacez "KM Services" dans les fichiers selon vos besoins ou ajoutez une image
 ## 🚨 Troubleshooting
 
 ### "Erreur de connexion à la base de données"
-- Vérifiez que MySQL est en cours d'exécution
-- Vérifiez les identifiants dans `config/config.php`
-- Vérifiez que la base de données `km_services` existe
+- En local: vérifiez MySQL/Postgres et `config/config.php`
+- Sur Vercel: vérifiez les variables d'environnement DB/Supabase
 
 ### "404 - Page non trouvée"
 - Assurez-vous que mod_rewrite est activé dans Apache
@@ -225,8 +246,8 @@ Remplacez "KM Services" dans les fichiers selon vos besoins ou ajoutez une image
 - Redémarrez Apache
 
 ### "Les fichiers uploadés ne s'affichent pas"
-- Vérifiez les permissions du dossier `public/uploads/`
-- Assurez-vous que le chemin est correct
+- En local: permissions sur `public/uploads/`
+- Sur Vercel: utilisez Supabase Storage; vérifiez `SUPABASE_*` et que le bucket est public
 
 ## 📧 Support
 
