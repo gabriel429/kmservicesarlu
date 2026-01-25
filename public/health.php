@@ -30,8 +30,22 @@ try {
     $result['db']['port'] = defined('DB_PORT') ? DB_PORT : null;
     $result['db']['name'] = defined('DB_NAME') ? DB_NAME : null;
     try {
-        $db = \App\Database::getInstance()->getConnection();
-        $stmt = $db->query('SELECT 1');
+        // Connecter directement via PDO pour éviter un die() global
+        if ($result['db']['driver'] === 'pgsql') {
+            $dsn = 'pgsql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';sslmode=require';
+            $pdo = new \PDO($dsn, DB_USER, DB_PASS, [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                \PDO::ATTR_EMULATE_PREPARES => false,
+            ]);
+        } else {
+            $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8mb4';
+            $pdo = new \PDO($dsn, DB_USER, DB_PASS, [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            ]);
+        }
+        $stmt = $pdo->query('SELECT 1');
         $stmt->fetch();
         $result['db']['ok'] = true;
     } catch (\Throwable $e) {
