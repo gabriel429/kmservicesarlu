@@ -9,12 +9,31 @@ $env = function($key, $default = null) {
     return ($val === false || $val === '') ? $default : $val;
 };
 
-define('DB_DRIVER', $env('DB_DRIVER', 'mysql')); // mysql | pgsql
-define('DB_HOST', $env('DB_HOST', 'localhost'));
+// Déduire automatiquement Postgres si SUPABASE_URL est présent
+$supabaseUrl = $env('SUPABASE_URL', '');
+$defaultDriver = $supabaseUrl ? 'pgsql' : 'mysql';
+define('DB_DRIVER', $env('DB_DRIVER', $defaultDriver)); // mysql | pgsql
+
+// Définir les valeurs par défaut adaptées
+$defaultHost = 'localhost';
+if (DB_DRIVER === 'pgsql' && $supabaseUrl) {
+    $host = parse_url($supabaseUrl, PHP_URL_HOST);
+    if (is_string($host)) {
+        // Exemple: etlscfspscktkoqiefls.supabase.co -> db.etlscfspscktkoqiefls.supabase.co
+        $parts = explode('.', $host);
+        if (count($parts) >= 3 && $parts[count($parts)-2] === 'supabase' && $parts[count($parts)-1] === 'co') {
+            $projectId = $parts[0];
+            if ($projectId) {
+                $defaultHost = 'db.' . $projectId . '.supabase.co';
+            }
+        }
+    }
+}
+define('DB_HOST', $env('DB_HOST', $defaultHost));
 define('DB_PORT', (int)$env('DB_PORT', DB_DRIVER === 'pgsql' ? 5432 : 3306));
-define('DB_USER', $env('DB_USER', 'root'));
+define('DB_USER', $env('DB_USER', DB_DRIVER === 'pgsql' ? 'postgres' : 'root'));
 define('DB_PASS', $env('DB_PASS', ''));
-define('DB_NAME', $env('DB_NAME', 'km_services'));
+define('DB_NAME', $env('DB_NAME', DB_DRIVER === 'pgsql' ? 'postgres' : 'km_services'));
 
 // Application
 define('APP_NAME', 'KM Services');

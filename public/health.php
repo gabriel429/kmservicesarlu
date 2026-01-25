@@ -8,6 +8,9 @@ $result = [
     'db' => [
         'ok' => false,
         'driver' => null,
+        'host' => null,
+        'port' => null,
+        'name' => null,
     ],
     'storage' => [
         'configured' => false,
@@ -23,6 +26,9 @@ try {
 
     // DB
     $result['db']['driver'] = defined('DB_DRIVER') ? DB_DRIVER : 'mysql';
+    $result['db']['host'] = defined('DB_HOST') ? DB_HOST : null;
+    $result['db']['port'] = defined('DB_PORT') ? DB_PORT : null;
+    $result['db']['name'] = defined('DB_NAME') ? DB_NAME : null;
     try {
         $db = \App\Database::getInstance()->getConnection();
         $stmt = $db->query('SELECT 1');
