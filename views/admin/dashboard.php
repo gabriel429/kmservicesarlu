@@ -2,6 +2,9 @@
 /**
  * Tableau de Bord Admin
  */
+if (!class_exists('MySQLCore')) {
+    require_once dirname(__DIR__, 2) . '/app/MySQL.php';
+}
 ?>
 
 <div class="stats-container">
@@ -10,11 +13,13 @@
         $projectCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM projects");
         $productCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM products");
         $contactCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM contacts WHERE statut = 'nouveau'");
+        $forageCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM drilling_requests WHERE statut = 'nouveau'");
         $orderCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM orders WHERE statut = 'nouvelle'");
     } catch (Exception $e) {
         $projectCount = ['count' => 0];
         $productCount = ['count' => 0];
         $contactCount = ['count' => 0];
+        $forageCount = ['count' => 0];
         $orderCount = ['count' => 0];
     }
     $role = $_SESSION['admin_role'] ?? 'editor';
@@ -39,6 +44,11 @@
     <div class="stat-card">
         <h3><?php echo $orderCount['count'] ?? 0; ?></h3>
         <p>Commandes en attente</p>
+    </div>
+
+    <div class="stat-card">
+        <h3><?php echo $forageCount['count'] ?? 0; ?></h3>
+        <p>Demandes de Forage</p>
     </div>
 </div>
 

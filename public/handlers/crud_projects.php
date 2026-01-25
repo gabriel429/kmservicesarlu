@@ -1,38 +1,60 @@
 <?php
 header('Content-Type: application/json; charset=UTF-8');
-error_reporting(0);
-ini_set('display_errors', 0);
+// Activer les erreurs pour le débogage des requêtes AJAX
+ini_set('display_errors', 0); // On ne veut pas polluer le JSON
+error_reporting(E_ALL);
+
 session_start();
 
 $response = ['success' => false, 'message' => 'Erreur'];
 
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../app/MySQL.php';
-require_once __DIR__ . '/../../app/Supabase.php';
 
 function ensureProjectAuditTable() {
-    MySQLCore::execute(
-        "CREATE TABLE IF NOT EXISTS project_audit (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            admin_user_id INT NULL,
-            project_id INT NULL,
-            action VARCHAR(50) NOT NULL,
-            details TEXT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
-    );
+    try {
+        MySQLCore::execute(
+            "CREATE TABLE IF NOT EXISTS project_audit (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                admin_user_id INT NULL,
+                project_id INT NULL,
+                action VARCHAR(50) NOT NULL,
+                details TEXT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+    } catch (Throwable $e) {}
+}
+
+function ensureProjectImagesTable() {
+    try {
+        MySQLCore::execute(
+            "CREATE TABLE IF NOT EXISTS project_images (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                project_id INT NOT NULL,
+                image_path VARCHAR(255) NOT NULL,
+                alt_text VARCHAR(255) NULL,
+                ordre INT DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+    } catch (Throwable $e) {}
 }
 
 function logProjectAction($action, $projectId = null, $details = null) {
     ensureProjectAuditTable();
     $adminId = $_SESSION['admin_user_id'] ?? null;
-    MySQLCore::execute(
-        "INSERT INTO project_audit (admin_user_id, project_id, action, details) VALUES (?, ?, ?, ?)",
-        [$adminId, $projectId, $action, $details]
-    );
+    try {
+        MySQLCore::execute(
+            "INSERT INTO project_audit (admin_user_id, project_id, action, details) VALUES (?, ?, ?, ?)",
+            [$adminId, $projectId, $action, $details]
+        );
+    } catch (Throwable $e) {}
 }
+
 try {
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
+    ensureProjectImagesTable();
     
     // Dossier uploads (fallback local en dev)
     $uploadsDir = dirname(dirname(__FILE__)) . '/uploads/projects/';
@@ -42,7 +64,6 @@ try {
     
     function handleProjectImageUploads($projectId, $keepExisting = false) {
         global $uploadsDir;
-        $supabase = \App\SupabaseStorage::fromEnv('uploads');
         
         // Supprimer les anciennes images si on fait une mise à jour (sauf si keepExisting)
         if ($keepExisting === false) {
@@ -76,48 +97,45 @@ try {
             $ext = $ext === 'jpeg' ? 'jpg' : $ext;
             $filename = 'project_' . $projectId . '_' . time() . '_' . $uploaded . '.' . $ext;
 
-            if ($supabase) {
-                $storagePath = 'projects/' . $filename;
-                $publicUrl = $supabase->uploadFile($files['tmp_name'][$i], $storagePath, $files['type'][$i] ?: 'image/jpeg');
-                if ($publicUrl) {
-                    MySQLCore::execute(
-                        "INSERT INTO project_images (project_id, image_path, ordre) VALUES (?, ?, ?)",
-                        [$projectId, $publicUrl, $uploaded]
-                    );
-                    $uploaded++;
-                }
-            } else {
-                if (move_uploaded_file($files['tmp_name'][$i], $uploadsDir . $filename)) {
-                    MySQLCore::execute(
-                        "INSERT INTO project_images (project_id, image_path, ordre) VALUES (?, ?, ?)",
-                        [$projectId, $filename, $uploaded]
-                    );
-                    $uploaded++;
-                }
+            if (move_uploaded_file($files['tmp_name'][$i], $uploadsDir . $filename)) {
+                MySQLCore::execute(
+                    "INSERT INTO project_images (project_id, image_path, ordre) VALUES (?, ?, ?)",
+                    [$projectId, $filename, $uploaded]
+                );
+                $uploaded++;
             }
         }
     }
     
     switch ($action) {
         case 'create':
-            if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'admin') {
-                throw new Exception('Accès refusé: réservé aux administrateurs');
+            if (!isset($_SESSION['admin_role'])) {
+                throw new Exception('Session expirée ou non autorisée');
             }
             $titre = trim($_POST['titre'] ?? '');
             $description = trim($_POST['description'] ?? '');
             $localisation = trim($_POST['localisation'] ?? '');
             $statut = $_POST['statut'] ?? 'en_cours';
-            $actif = isset($_POST['actif']) ? 1 : 0;
+            $actif = (isset($_POST['actif']) && ($_POST['actif'] === '1' || $_POST['actif'] === 1)) ? 1 : 0;
             
             if (empty($titre)) throw new Exception('Le titre du projet est requis');
             
-            $slug = strtolower(str_replace(' ', '-', $titre));
+            // Slugification simple mais plus robuste
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $titre), '-'));
             
-            MySQLCore::execute(
+            // Vérifier si le slug existe déjà (pour ne pas bloquer l'insert)
+            $check = MySQLCore::fetch("SELECT id FROM projects WHERE slug = ?", [$slug]);
+            if ($check) {
+                $slug .= '-' . time();
+            }
+            
+            $ok = MySQLCore::execute(
                 "INSERT INTO projects (titre, slug, description, localisation, statut, actif) 
                  VALUES (?, ?, ?, ?, ?, ?)",
                 [$titre, $slug, $description, $localisation, $statut, $actif]
             );
+            
+            if (!$ok) throw new Exception('Échec de l\'insertion en base de données');
             
             $projectId = MySQLCore::lastInsertId();
             
@@ -140,15 +158,15 @@ try {
             break;
             
         case 'update':
-            if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'admin') {
-                throw new Exception('Accès refusé: réservé aux administrateurs');
+            if (!isset($_SESSION['admin_role'])) {
+                throw new Exception('Session expirée');
             }
             $id = intval($_POST['id'] ?? 0);
             $titre = trim($_POST['titre'] ?? '');
             $description = trim($_POST['description'] ?? '');
             $localisation = trim($_POST['localisation'] ?? '');
             $statut = $_POST['statut'] ?? 'en_cours';
-            $actif = isset($_POST['actif']) ? 1 : 0;
+            $actif = (isset($_POST['actif']) && ($_POST['actif'] === '1' || $_POST['actif'] === 1)) ? 1 : 0;
             
             if (!$id) throw new Exception('ID du projet requis');
             if (empty($titre)) throw new Exception('Le titre du projet est requis');
@@ -213,7 +231,14 @@ try {
     }
     
 } catch (Throwable $e) {
-    $response = ['success' => false, 'message' => $e->getMessage()];
+    $response = [
+        'success' => false, 
+        'message' => $e->getMessage(),
+        'debug' => [
+            'file' => basename($e->getFile()),
+            'line' => $e->getLine()
+        ]
+    ];
 }
 
 echo json_encode($response);

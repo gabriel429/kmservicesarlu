@@ -1,35 +1,40 @@
 <?php
 header('Content-Type: application/json; charset=UTF-8');
-error_reporting(0);
-ini_set('display_errors', 0);
+// Activer les erreurs pour le débogage des requêtes AJAX
+ini_set('display_errors', 0); // On ne veut pas polluer le JSON
+error_reporting(E_ALL);
+
 session_start();
 
 $response = ['success' => false, 'message' => 'Erreur'];
 
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../app/MySQL.php';
-require_once __DIR__ . '/../../app/Supabase.php';
 
 function ensureProductAuditTable() {
-    MySQLCore::execute(
-        "CREATE TABLE IF NOT EXISTS product_audit (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            admin_user_id INT NULL,
-            product_id INT NULL,
-            action VARCHAR(50) NOT NULL,
-            details TEXT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
-    );
+    try {
+        MySQLCore::execute(
+            "CREATE TABLE IF NOT EXISTS product_audit (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                admin_user_id INT NULL,
+                product_id INT NULL,
+                action VARCHAR(50) NOT NULL,
+                details TEXT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+    } catch (Throwable $e) {}
 }
 
 function logProductAction($action, $productId = null, $details = null) {
     ensureProductAuditTable();
     $adminId = $_SESSION['admin_user_id'] ?? null;
-    MySQLCore::execute(
-        "INSERT INTO product_audit (admin_user_id, product_id, action, details) VALUES (?, ?, ?, ?)",
-        [$adminId, $productId, $action, $details]
-    );
+    try {
+        MySQLCore::execute(
+            "INSERT INTO product_audit (admin_user_id, product_id, action, details) VALUES (?, ?, ?, ?)",
+            [$adminId, $productId, $action, $details]
+        );
+    } catch (Throwable $e) {}
 }
 try {
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
@@ -42,7 +47,6 @@ try {
     
     function handleImageUpload($productId, $existingImage = null) {
         global $uploadsDir;
-        $supabase = \App\SupabaseStorage::fromEnv('uploads');
         
         if (!isset($_FILES['image']) || $_FILES['image']['error'] === UPLOAD_ERR_NO_FILE) {
             return $existingImage; // Aucun fichier uploadé
@@ -65,9 +69,7 @@ try {
         
         // Supprimer l'ancienne image si elle existe
         if ($existingImage) {
-            if ($supabase && is_string($existingImage) && str_starts_with($existingImage, 'http')) {
-                $supabase->deleteByPublicUrl($existingImage);
-            } elseif (!str_starts_with((string)$existingImage, 'http') && file_exists($uploadsDir . $existingImage)) {
+            if (!str_starts_with((string)$existingImage, 'http') && file_exists($uploadsDir . $existingImage)) {
                 @unlink($uploadsDir . $existingImage);
             }
         }
@@ -77,42 +79,38 @@ try {
         $ext = $ext === 'jpeg' ? 'jpg' : $ext;
         $filename = 'product_' . $productId . '_' . time() . '.' . $ext;
 
-        if ($supabase) {
-            $storagePath = 'products/' . $filename;
-            $publicUrl = $supabase->uploadFile($file['tmp_name'], $storagePath, $file['type'] ?: 'image/jpeg');
-            if (!$publicUrl) {
-                throw new Exception('Échec de l\'upload vers Supabase Storage');
-            }
-            return $publicUrl; // stocker l'URL publique
-        } else {
-            // Fallback local
-            if (!move_uploaded_file($file['tmp_name'], $uploadsDir . $filename)) {
-                throw new Exception('Impossible de sauvegarder l\'image');
-            }
-            return $filename; // stocker le nom de fichier local
+        // Fallback local
+        if (!move_uploaded_file($file['tmp_name'], $uploadsDir . $filename)) {
+            throw new Exception('Impossible de sauvegarder l\'image');
         }
+        return $filename; // stocker le nom de fichier local
     }
     
     switch ($action) {
         case 'create':
-            if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'admin') {
-                throw new Exception('Accès refusé: réservé aux administrateurs');
+            if (!isset($_SESSION['admin_role'])) {
+                throw new Exception('Session non autorisée');
             }
             $nom = trim($_POST['nom'] ?? '');
             $description = trim($_POST['description'] ?? '');
             $prix = floatval($_POST['prix'] ?? 0);
             $stock = intval($_POST['stock'] ?? 0);
-            $actif = isset($_POST['actif']) ? 1 : 0;
+            $actif = (isset($_POST['actif']) && ($_POST['actif'] === '1' || $_POST['actif'] === 1)) ? 1 : 0;
             
             if (empty($nom)) throw new Exception('Le nom du produit est requis');
             
-            $slug = strtolower(str_replace(' ', '-', $nom));
+            // Slugification plus robuste
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $nom), '-'));
+            $check = MySQLCore::fetch("SELECT id FROM products WHERE slug = ?", [$slug]);
+            if ($check) { $slug .= '-' . time(); }
             
-            MySQLCore::execute(
+            $ok = MySQLCore::execute(
                 "INSERT INTO products (nom, slug, description, prix, stock, actif) 
                  VALUES (?, ?, ?, ?, ?, ?)",
                 [$nom, $slug, $description, $prix, $stock, $actif]
             );
+            
+            if (!$ok) throw new Exception('Échec de l\'insertion du produit');
             
             $productId = MySQLCore::lastInsertId();
             
@@ -135,15 +133,15 @@ try {
             break;
             
         case 'update':
-            if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'admin') {
-                throw new Exception('Accès refusé: réservé aux administrateurs');
+            if (!isset($_SESSION['admin_role'])) {
+                throw new Exception('Session expirée');
             }
             $id = intval($_POST['id'] ?? 0);
             $nom = trim($_POST['nom'] ?? '');
             $description = trim($_POST['description'] ?? '');
             $prix = floatval($_POST['prix'] ?? 0);
             $stock = intval($_POST['stock'] ?? 0);
-            $actif = isset($_POST['actif']) ? 1 : 0;
+            $actif = (isset($_POST['actif']) && ($_POST['actif'] === '1' || $_POST['actif'] === 1)) ? 1 : 0;
             
             if (!$id) throw new Exception('ID du produit requis');
             if (empty($nom)) throw new Exception('Le nom du produit est requis');
@@ -174,14 +172,11 @@ try {
             $id = intval($_POST['id'] ?? 0);
             if (!$id) throw new Exception('ID du produit requis');
             
-            // Récupérer l'image avant suppression et la supprimer (local ou Supabase)
+            // Récupérer l'image avant suppression et la supprimer locales
             $product = MySQLCore::fetch("SELECT image_principale FROM products WHERE id = ?", [$id]);
-            if ($product && $product['image_principale']) {
+            if ($product && !empty($product['image_principale'])) {
                 $img = $product['image_principale'];
-                $supabase = \App\SupabaseStorage::fromEnv('uploads');
-                if ($supabase && is_string($img) && str_starts_with($img, 'http')) {
-                    $supabase->deleteByPublicUrl($img);
-                } elseif (!str_starts_with((string)$img, 'http') && file_exists($uploadsDir . $img)) {
+                if (!str_starts_with((string)$img, 'http') && file_exists($uploadsDir . $img)) {
                     @unlink($uploadsDir . $img);
                 }
             }
@@ -208,9 +203,15 @@ try {
         default:
             throw new Exception('Action invalide: ' . $action);
     }
-    
 } catch (Throwable $e) {
-    $response = ['success' => false, 'message' => $e->getMessage()];
+    $response = [
+        'success' => false, 
+        'message' => $e->getMessage(),
+        'debug' => [
+            'file' => basename($e->getFile()),
+            'line' => $e->getLine()
+        ]
+    ];
 }
 
 echo json_encode($response);

@@ -2,13 +2,39 @@
 
 // Menu mobile
 document.addEventListener('DOMContentLoaded', function() {
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.querySelector('.navbar-menu');
+    var navToggle = document.getElementById('navToggle');
+    var navMenu = document.querySelector('.navbar-menu');
     
+    console.log('DOM Loaded. navToggle:', navToggle, 'navMenu:', navMenu);
+
     if (navToggle && navMenu) {
-        navToggle.addEventListener('click', function() {
+        navToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
+            
+            var isActive = navMenu.classList.contains('active');
+            console.log('Menu mobile toggled. Active:', isActive);
+            
+            if (isActive) {
+                navMenu.style.display = 'flex';
+            } else {
+                navMenu.style.display = 'none';
+            }
         });
+
+        // Fermer le menu si on clique ailleurs
+        document.addEventListener('click', function(e) {
+            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                navMenu.style.display = 'none';
+            }
+        });
+    } else {
+        console.error('Nav elements not found!');
     }
 });
 

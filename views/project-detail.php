@@ -15,7 +15,7 @@
                 </span>
                 <span class="meta-item">
                     <i class="fas fa-check-circle"></i> 
-                    <?php echo $project['statut'] === 'realise' ? 'Réalisé' : 'En cours'; ?>
+                    <?php echo ($project['statut'] === 'realise' || $project['statut'] === 'termine') ? 'Réalisé' : 'En cours'; ?>
                 </span>
             </div>
             
@@ -36,7 +36,7 @@
                         </div>
                     <?php else: ?>
                         <div class="project-main-image">
-                            <img src="<?php echo APP_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible">
+                            <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible">
                         </div>
                     <?php endif; ?>
                     
@@ -85,7 +85,7 @@
                             <span class="label">Statut:</span>
                             <span class="value">
                                 <span class="status-badge <?php echo !empty($project['statut']) ? $project['statut'] : 'en_cours'; ?>">
-                                    <?php echo (!empty($project['statut']) && $project['statut'] === 'realise') ? 'Réalisé' : 'En cours'; ?>
+                                    <?php echo (!empty($project['statut']) && ($project['statut'] === 'realise' || $project['statut'] === 'termine')) ? 'Réalisé' : 'En cours'; ?>
                                 </span>
                             </span>
                         </div>
@@ -154,7 +154,7 @@
                                              srcset="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=400&h=200&q=85&format=webp 400w"
                                              sizes="(max-width: 768px) 100vw, 400px">
                                     <?php else: ?>
-                                        <img src="<?php echo APP_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible">
+                                        <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible">
                                     <?php endif; ?>
                                 </div>
                                 <div class="project-content">
@@ -277,7 +277,7 @@
     font-weight: 600;
 }
 
-.status-badge.realise {
+.status-badge.realise, .status-badge.termine {
     background-color: #d1fae5;
     color: #065f46;
 }

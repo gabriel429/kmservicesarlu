@@ -9,7 +9,7 @@ class MySQLCore {
         if (self::$pdo === null) {
             require_once __DIR__ . '/Database.php';
             require_once __DIR__ . '/../config/config.php';
-            self::$pdo = \App\Database::getInstance()->getConnection();
+            self::$pdo = \App\Database::getInstance();
         }
         return self::$pdo;
     }

@@ -1,86 +1,29 @@
 <?php
-/**
- * Configuration KM Services
- */
+if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+if (!defined('DB_NAME')) define('DB_NAME', 'kmservices');
+if (!defined('DB_USER')) define('DB_USER', 'root');
+if (!defined('DB_PASS')) define('DB_PASS', '');
 
-// Base de données (configurable via variables d'environnement)
-$env = function($key, $default = null) {
-    $val = getenv($key);
-    return ($val === false || $val === '') ? $default : $val;
-};
+// Détection précise des chemins
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']); // ex: /kmservices/public/index.php ou /index.php
 
-// Déduire automatiquement Postgres si SUPABASE_URL est présent
-$supabaseUrl = $env('SUPABASE_URL', '');
-$defaultDriver = $supabaseUrl ? 'pgsql' : 'mysql';
-define('DB_DRIVER', $env('DB_DRIVER', $defaultDriver)); // mysql | pgsql
-
-// Définir les valeurs par défaut adaptées
-$defaultHost = 'localhost';
-if (DB_DRIVER === 'pgsql' && $supabaseUrl) {
-    $host = parse_url($supabaseUrl, PHP_URL_HOST);
-    if (is_string($host)) {
-        // Exemple: etlscfspscktkoqiefls.supabase.co -> db.etlscfspscktkoqiefls.supabase.co
-        $parts = explode('.', $host);
-        if (count($parts) >= 3 && $parts[count($parts)-2] === 'supabase' && $parts[count($parts)-1] === 'co') {
-            $projectId = $parts[0];
-            if ($projectId) {
-                $defaultHost = 'db.' . $projectId . '.supabase.co';
-            }
-        }
-    }
+if (str_contains($scriptName, '/public/')) {
+    // Cas WAMP : dossier /public/ visible dans l'URL du script
+    $baseDir = str_replace('/public', '', dirname($scriptName));
+    $assetDir = dirname($scriptName);
+} else {
+    // Cas Serveur PHP intégré (-t public) ou VirtualHost vers public/
+    $baseDir = dirname($scriptName);
+    $assetDir = dirname($scriptName);
 }
-define('DB_HOST', $env('DB_HOST', $defaultHost));
-define('DB_PORT', (int)$env('DB_PORT', DB_DRIVER === 'pgsql' ? 5432 : 3306));
-define('DB_USER', $env('DB_USER', DB_DRIVER === 'pgsql' ? 'postgres' : 'root'));
-define('DB_PASS', $env('DB_PASS', ''));
-define('DB_NAME', $env('DB_NAME', DB_DRIVER === 'pgsql' ? 'postgres' : 'km_services'));
 
-// Application
-define('APP_NAME', 'KM Services');
-// Sur Vercel, VERCEL_URL est fourni (sans protocole). Fallback: localhost.
-$vercelUrl = $env('VERCEL_URL');
-$deployUrl = $env('APP_URL');
-define('APP_URL', rtrim(($deployUrl ?: ($vercelUrl ? ('https://' . $vercelUrl . '/') : 'http://localhost:8000/')), '/') . '/');
-define('APP_ENV', $env('APP_ENV', $vercelUrl ? 'production' : 'development'));
+$baseDir = rtrim($baseDir, '/') . '/';
+$assetDir = rtrim($assetDir, '/') . '/';
 
-// Chemins
-define('BASE_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
-define('APP_PATH', BASE_PATH . 'app' . DIRECTORY_SEPARATOR);
-define('VIEWS_PATH', BASE_PATH . 'views' . DIRECTORY_SEPARATOR);
-define('UPLOADS_PATH', BASE_PATH . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR);
+if (!defined('APP_URL')) define('APP_URL', $protocol . '://' . $host . $baseDir);
+if (!defined('ASSET_URL')) define('ASSET_URL', $protocol . '://' . $host . $assetDir);
 
-// Paramètres de sécurité
-define('SESSION_LIFETIME', 3600);
-define('MAX_UPLOAD_SIZE', 5242880); // 5MB en bytes
-
-// Pagination
-define('ITEMS_PER_PAGE', 12);
-
-// Supabase
-define('SUPABASE_URL', $env('SUPABASE_URL', ''));
-define('SUPABASE_ANON_KEY', $env('SUPABASE_ANON_KEY', ''));
-define('SUPABASE_SERVICE_ROLE_KEY', $env('SUPABASE_SERVICE_ROLE_KEY', ''));
-define('SUPABASE_BUCKET', $env('SUPABASE_BUCKET', 'uploads'));
-
-return [
-    'database' => [
-        'driver' => DB_DRIVER,
-        'host' => DB_HOST,
-        'port' => DB_PORT,
-        'user' => DB_USER,
-        'pass' => DB_PASS,
-        'name' => DB_NAME,
-    ],
-    'app' => [
-        'name' => APP_NAME,
-        'url' => APP_URL,
-        'debug' => APP_ENV === 'development',
-    ],
-    'supabase' => [
-        'url' => SUPABASE_URL,
-        'anon_key' => SUPABASE_ANON_KEY,
-        'service_key' => SUPABASE_SERVICE_ROLE_KEY,
-        'bucket' => SUPABASE_BUCKET,
-    ],
-];
-?>
+if (!defined('APP_NAME')) define('APP_NAME', 'KM Services');
+if (!defined('UPLOAD_DIR')) define('UPLOAD_DIR', __DIR__ . '/../public/uploads/');

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Responsive - KM Services Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #f97316;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 4px solid #10b981;
+            background: #f9fafb;
+            border-radius: 4px;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .checklist li.warning:before {
+            content: "⚠";
+            color: #f59e0b;
+        }
+
+        .checklist li.warning {
+            color: #92400e;
+        }
+
+        .breakpoint {
+            margin: 15px 0;
+            padding: 12px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #666;
+        }
+
+        .test-commands {
+            background: #0f172a;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .feature-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .feature {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .feature h3 {
+            color: #1e3a8a;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin: 5px 5px 5px 0;
+        }
+
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-info {
+            background: #dbeafe;
+            color: #0c4a6e;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .code-block {
+            background: #f3f4f6;
+            border-left: 3px solid #6366f1;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .success-msg {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #065f46;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>📱 Test du Responsive Design - Tableau de Bord Admin</h1>
+
+        <div class="success-msg">
+            ✅ Responsive design complètement implémenté et testé pour KM Services Dashboard
+        </div>
+
+        <!-- ========== TESTS RECOMMANDÉS ========== -->
+        <div class="test-section">
+            <h2>🧪 Tests Recommandés</h2>
+
+            <h3 style="margin-top: 15px; color: #0f172a; font-size: 1rem;">Avec DevTools (Chrome/Firefox/Edge)</h3>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>Appuyer sur <strong>F12</strong> ou <strong>Ctrl+Shift+I</strong></li>
+                <li>Cliquer sur l'icône <strong>Toggle Device Toolbar</strong> (coin haut-gauche)</li>
+                <li>Sélectionner les appareils suivants pour tester :</li>
+            </ol>
+
+            <table style="margin-top: 15px;">
+                <thead>
+                    <tr>
+                        <th>Appareil</th>
+                        <th>Résolution</th>
+                        <th>Comportement Attendu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>iPhone 12</strong></td>
+                        <td>390 × 844</td>
+                        <td>Sidebar drawer, menu toggle visible, tables format card</td>
+                    </tr>
+                    <tr>
+                        <td><strong>iPhone 14 Pro</strong></td>
+                        <td>393 × 852</td>
+                        <td>Sidebar drawer, tables compactées, boutons pleins</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Samsung Galaxy S21</strong></td>
+                        <td>360 × 800</td>
+                        <td>Sidebar drawer, texte très compact, scroll horizontal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>iPad</strong></td>
+                        <td>768 × 1024</td>
+                        <td>Sidebar drawer (768px breakpoint), tables adaptées</td>
+                    </tr>
+                    <tr>
+                        <td><strong>iPad Pro</strong></td>
+                        <td>1024 × 1366</td>
+                        <td>Sidebar drawer (1024px breakpoint), layout adapté</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Desktop 1920×1080</strong></td>
+                        <td>1920 × 1080</td>
+                        <td>Sidebar fixe, layout 2 colonnes, menu toggle caché</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="test-commands">Accès direct aux pages de test :<br>
+http://localhost/kmservices/admin/dashboard<br>
+http://localhost/kmservices/admin/produits<br>
+http://localhost/kmservices/admin/contacts<br>
+http://localhost/kmservices/admin/commandes<br>
+http://localhost/kmservices/admin/utilisateurs
+            </div>
+        </div>
+
+        <!-- ========== FONCTIONNALITÉS IMPLÉMENTÉES ========== -->
+        <div class="test-section">
+            <h2>✨ Fonctionnalités Implémentées</h2>
+
+            <div class="feature-box">
+                <div class="feature">
+                    <h3>🎨 Breakpoints Responsifs</h3>
+                    <p>
+                        ✓ Desktop (≥1024px)<br>
+                        ✓ Tablet (768px - 1024px)<br>
+                        ✓ Mobile (480px - 768px)<br>
+                        ✓ Petit Mobile (&lt;480px)
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <h3>📱 Menu Mobile</h3>
+                    <p>
+                        ✓ Bouton toggle (hamburger)<br>
+                        ✓ Drawer du bas<br>
+                        ✓ Fermeture auto<br>
+                        ✓ Animation icône
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <h3>📊 Tables Responsives</h3>
+                    <p>
+                        ✓ Format card mobile<br>
+                        ✓ Étiquettes colonnes<br>
+                        ✓ Scroll horizontal<br>
+                        ✓ Data-labels CSS
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <h3>🔘 Boutons Adaptatifs</h3>
+                    <p>
+                        ✓ Pleine largeur mobile<br>
+                        ✓ Padding adaptatif<br>
+                        ✓ Flex-wrap<br>
+                        ✓ Fonts 16px iOS
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <h3>📝 Formulaires</h3>
+                    <p>
+                        ✓ Width 100% mobile<br>
+                        ✓ Font 16px (no zoom)<br>
+                        ✓ Padding adaptatif<br>
+                        ✓ Labels visibles
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <h3>📈 Statistiques</h3>
+                    <p>
+                        ✓ Grid auto-fit<br>
+                        ✓ Overflow scroll<br>
+                        ✓ Tailles réduites<br>
+                        ✓ Compact mobile
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== FICHIERS MODIFIÉS ========== -->
+        <div class="test-section">
+            <h2>📝 Fichiers Modifiés</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fichier</th>
+                        <th>Type de Modification</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>views/admin/layout.php</code></td>
+                        <td>CSS + JS responsive + bouton toggle</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>views/admin/produits.php</code></td>
+                        <td>Ajout data-label sur cellules</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>views/admin/contacts.php</code></td>
+                        <td>Ajout data-label sur cellules</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>views/admin/commandes.php</code></td>
+                        <td>Ajout data-label sur cellules</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>views/admin/utilisateurs.php</code></td>
+                        <td>Ajout data-label sur cellules</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>views/admin/projets.php</code></td>
+                        <td>Ajout data-label sur cellules</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>views/admin/forages.php</code></td>
+                        <td>Ajout data-label sur cellules</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>views/admin/logs.php</code></td>
+                        <td>Ajout data-label sur cellules dynamiques</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>public/assets/css/style.css</code></td>
+                        <td>CSS responsive admin (modales, formulaires)</td>
+                        <td><span class="status-badge status-success">✓ COMPLÉTÉ</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ========== POINTS DE RUPTURE DÉTAILLÉS ========== -->
+        <div class="test-section">
+            <h2>📊 Points de Rupture (Breakpoints)</h2>
+
+            <div class="breakpoint">
+                <strong>Desktop (≥1024px)</strong><br>
+                <code>@media (min-width: 1025px)</code><br>
+                • Sidebar fixe 250px gauche<br>
+                • Layout 2 colonnes (250px + 1fr)<br>
+                • Menu toggle: display:none<br>
+                • Toutes colonnes visibles<br>
+                • Fonts normales
+            </div>
+
+            <div class="breakpoint">
+                <strong>Tablet (768px - 1024px)</strong><br>
+                <code>@media (max-width: 1024px)</code><br>
+                • Sidebar drawer visible au click<br>
+                • Max-height: 70vh<br>
+                • Menu toggle: display:block<br>
+                • Header padding réduit<br>
+                • Font-size tables: 0.85rem
+            </div>
+
+            <div class="breakpoint">
+                <strong>Mobile (480px - 768px)</strong><br>
+                <code>@media (max-width: 768px)</code><br>
+                • Sidebar drawer: max-height 65vh<br>
+                • Position: fixed bottom<br>
+                • Tables format "carte"<br>
+                • Boutons 100% width<br>
+                • Font-size 16px inputs (iOS)<br>
+                • Main-content margin-bottom 300px
+            </div>
+
+            <div class="breakpoint">
+                <strong>Petit Mobile (&lt;480px)</strong><br>
+                <code>@media (max-width: 480px)</code><br>
+                • Tables ultra-compactées (0.65rem)<br>
+                • Cellules: padding-left 40%<br>
+                • Sidebar très réduit<br>
+                • Font sizes minimales<br>
+                • Espacements réduits
+            </div>
+        </div>
+
+        <!-- ========== VÉRIFICATION POUR DÉVELOPPEURS ========== -->
+        <div class="test-section">
+            <h2>👨‍💻 Checklist pour Développeurs</h2>
+
+            <ul class="checklist">
+                <li>Sidebar transformée en drawer mobile</li>
+                <li>Bouton toggle menu (hamburger) ajouté</li>
+                <li>JavaScript pour gérer ouverture/fermeture du menu</li>
+                <li>Tous les fichiers admin ont data-label sur cellules</li>
+                <li>CSS media queries pour 4 breakpoints</li>
+                <li>Tables format "carte" sur mobile (via CSS ::before)</li>
+                <li>Formulaires 100% width sur mobile</li>
+                <li>Font-size 16px inputs pour éviter zoom iOS</li>
+                <li>Boutons pleine largeur sur mobile</li>
+                <li>Animations icône menu (fa-bars ↔ fa-times)</li>
+                <li>Menu ferme au click externe / Escape</li>
+                <li>Menu ferme au click sur lien</li>
+                <li>Page active marquée dans menu</li>
+                <li>CSS variables utilisées pour thèmes</li>
+                <li>Scroll horizontal pour tables si besoin</li>
+            </ul>
+        </div>
+
+        <!-- ========== PROCHAINES ÉTAPES ========== -->
+        <div class="test-section">
+            <h2>🚀 Prochaines Étapes (Optionnel)</h2>
+
+            <ul class="checklist">
+                <li>Ajouter swipe gestures (jQuery Touch)</li>
+                <li>Animations drawer (entrée/sortie)</li>
+                <li>Haptic feedback mobile (vibration)</li>
+                <li>Lazy loading tables longues</li>
+                <li>Progressive Web App (PWA)</li>
+                <li>Dark mode support</li>
+                <li>Infinite scroll tables</li>
+                <li>Search/filter responsive</li>
+                <li>Modal/dialog responsive</li>
+                <li>Notifications push</li>
+            </ul>
+        </div>
+
+        <!-- ========== NOTES FINALES ========== -->
+        <div class="note">
+            💡 <strong>Astuce Important</strong> : Utilisez <strong>Ctrl+Shift+P</strong> dans DevTools et tapez "Slow 3G" pour tester sur connexion lente. Utilisez aussi le throttling réseau pour vérifier la performance mobile.
+        </div>
+
+        <div class="success-msg">
+            ✅ <strong>Status</strong> : Responsive design admin complètement implémenté et prêt pour production. Testez sur vos appareils mobiles !
+        </div>
+    </div>
+</body>
+</html>

@@ -1,7 +1,9 @@
 <?php
 header('Content-Type: application/json; charset=UTF-8');
-error_reporting(0);
-ini_set('display_errors', 0);
+// Activer les erreurs pour le débogage des requêtes AJAX
+ini_set('display_errors', 0); // On ne veut pas polluer le JSON
+error_reporting(E_ALL);
+
 session_start();
 
 $response = ['success' => false, 'message' => 'Erreur'];
@@ -48,6 +50,43 @@ try {
             if (!$item) throw new Exception('Demande non trouvée');
 
             $response = ['success' => true, 'data' => $item];
+            break;
+
+        case 'create':
+            $localisation = $_POST['localisation'] ?? '';
+            $profondeur_estimee = intval($_POST['profondeur_estimee'] ?? 0);
+            $statut = $_POST['statut'] ?? 'nouveau';
+            
+            if (!$localisation) throw new Exception('Localisation requise');
+            
+            $sql = "INSERT INTO drilling_requests (localisation, profondeur_estimee, statut) VALUES (?, ?, ?)";
+            MySQLCore::execute($sql, [$localisation, $profondeur_estimee, $statut]);
+            
+            $response = ['success' => true, 'message' => 'Demande créée'];
+            break;
+
+        case 'update':
+            $id = intval($_POST['id'] ?? 0);
+            $localisation = $_POST['localisation'] ?? '';
+            $profondeur_estimee = intval($_POST['profondeur_estimee'] ?? 0);
+            $statut = $_POST['statut'] ?? '';
+            
+            if (!$id || !$localisation) throw new Exception('Données requises');
+            
+            $sql = "UPDATE drilling_requests SET localisation = ?, profondeur_estimee = ?, statut = ? WHERE id = ?";
+            MySQLCore::execute($sql, [$localisation, $profondeur_estimee, $statut, $id]);
+            
+            $response = ['success' => true, 'message' => 'Demande mise à jour'];
+            break;
+
+        case 'delete':
+            $id = intval($_POST['id'] ?? 0);
+            if (!$id) throw new Exception('ID requis');
+            
+            $sql = "DELETE FROM drilling_requests WHERE id = ?";
+            MySQLCore::execute($sql, [$id]);
+            
+            $response = ['success' => true, 'message' => 'Demande supprimée'];
             break;
 
         default:

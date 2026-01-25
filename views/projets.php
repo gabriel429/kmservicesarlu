@@ -20,7 +20,7 @@ if (!isset($projects) || empty($projects)) {
         
         <div class="projects-filters">
             <button class="filter-btn active" data-filter="tous">Tous</button>
-            <button class="filter-btn" data-filter="realise">Réalisés</button>
+            <button class="filter-btn" data-filter="termine">Réalisés</button>
             <button class="filter-btn" data-filter="en_cours">En Cours</button>
         </div>
         
@@ -41,9 +41,9 @@ if (!isset($projects) || empty($projects)) {
                                        sizes="(max-width: 768px) 100vw, 400px">
                                 <?php endif; ?>
                             <?php else: ?>
-                                  <img src="<?php echo APP_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible" />
+                                  <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible" />
                             <?php endif; ?>
-                            <span class="project-status"><?php echo $project['statut'] === 'realise' ? 'Réalisé' : 'En Cours'; ?></span>
+                            <span class="project-status"><?php echo ($project['statut'] === 'realise' || $project['statut'] === 'termine') ? 'Réalisé' : 'En Cours'; ?></span>
                         </div>
                         <div class="project-content">
                             <h3><?php echo htmlspecialchars($project['titre']); ?></h3>

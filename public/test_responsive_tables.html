@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Tableaux Responsive - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #f59e0b;
+            --accent-color: #10b981;
+            --dark-bg: #111827;
+            --light-bg: #f9fafb;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .admin-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-table tr:hover {
+            background-color: var(--light-bg);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+            transition: all 0.3s;
+        }
+
+        .btn-info {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #0f172a;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .viewport-info {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .admin-table thead {
+                display: none;
+            }
+
+            .admin-table tbody tr {
+                border: 1px solid var(--border-color);
+                margin-bottom: 1rem;
+                border-radius: 0.25rem;
+                display: block;
+            }
+
+            .admin-table td {
+                padding-left: 50%;
+                position: relative;
+                border: none;
+                border-bottom: 1px solid var(--border-color);
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+                display: block;
+            }
+
+            .admin-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding: 0.5rem;
+                font-weight: 600;
+                font-size: 0.8rem;
+                background-color: var(--light-bg);
+                word-wrap: break-word;
+            }
+
+            .admin-table td[data-label="Actions"] {
+                padding-left: 100%;
+            }
+
+            .admin-table td[data-label="Actions"]::before {
+                width: 100%;
+            }
+
+            .admin-table .btn {
+                display: inline-block;
+                padding: 0.35rem 0.5rem;
+                font-size: 0.7rem;
+                margin-right: 0.25rem;
+                margin-bottom: 0.25rem;
+                width: auto;
+            }
+
+            .admin-table .badge {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .admin-table {
+                font-size: 0.85rem;
+            }
+
+            .admin-table td::before {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1rem;
+            }
+
+            .admin-table {
+                font-size: 0.65rem;
+            }
+
+            .admin-table td {
+                padding-left: 45%;
+                padding-top: 0.4rem;
+                padding-bottom: 0.4rem;
+                padding-right: 0.3rem;
+            }
+
+            .admin-table td::before {
+                width: 45%;
+                font-size: 0.65rem;
+                padding: 0.3rem;
+            }
+
+            .admin-table td[data-label="Actions"] {
+                padding-left: 100%;
+            }
+
+            .admin-table td[data-label="Actions"]::before {
+                width: 100%;
+            }
+
+            .admin-table .btn {
+                padding: 0.25rem 0.35rem;
+                font-size: 0.6rem;
+                margin-right: 0.15rem;
+                margin-bottom: 0.15rem;
+            }
+
+            .admin-table .badge {
+                padding: 0.2rem 0.35rem;
+                font-size: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Test Tableaux Responsive</h1>
+
+        <div class="viewport-info">
+            <strong>Largeur actuelle:</strong> <span id="width">-</span>px | 
+            <strong>Hauteur:</strong> <span id="height">-</span>px
+        </div>
+
+        <div class="info-box">
+            <strong>✓ Instructions:</strong>
+            <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                <li>Redimensionnez votre navigateur pour voir l'adaptation</li>
+                <li>Sur mobile (&lt;=1024px): Les colonnes deviennent des lignes avec des étiquettes</li>
+                <li>Les boutons et badges sont resizés pour s'adapter</li>
+                <li>Testez à 390px (iPhone), 360px (Galaxy), 768px (iPad)</li>
+            </ul>
+        </div>
+
+        <!-- Tableau Produits -->
+        <h2 style="color: var(--primary-color); margin-top: 2rem; margin-bottom: 1rem; font-size: 1.3rem;">Produits</h2>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Stock</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="Nom"><strong>Forage Diagraphie</strong></td>
+                    <td data-label="Prix">2500 USD</td>
+                    <td data-label="Stock">15</td>
+                    <td data-label="Statut"><span class="badge badge-success">Actif</span></td>
+                    <td data-label="Actions">
+                        <button class="btn btn-sm btn-info">Éditer</button>
+                        <button class="btn btn-sm btn-danger">Supprimer</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Nom"><strong>Forage Eau Potable</strong></td>
+                    <td data-label="Prix">1800 USD</td>
+                    <td data-label="Stock">8</td>
+                    <td data-label="Statut"><span class="badge badge-success">Actif</span></td>
+                    <td data-label="Actions">
+                        <button class="btn btn-sm btn-info">Éditer</button>
+                        <button class="btn btn-sm btn-danger">Supprimer</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Nom"><strong>Service de Maintenance</strong></td>
+                    <td data-label="Prix">500 USD</td>
+                    <td data-label="Stock">0</td>
+                    <td data-label="Statut"><span class="badge badge-danger">Inactif</span></td>
+                    <td data-label="Actions">
+                        <button class="btn btn-sm btn-info">Éditer</button>
+                        <button class="btn btn-sm btn-danger">Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Tableau Contacts -->
+        <h2 style="color: var(--primary-color); margin-top: 2rem; margin-bottom: 1rem; font-size: 1.3rem;">Messages</h2>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Sujet</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="Nom"><strong>Jean Dupont</strong></td>
+                    <td data-label="Email">jean@example.com</td>
+                    <td data-label="Sujet">Demande de devis forage</td>
+                    <td data-label="Statut"><span class="badge badge-success">Nouveau</span></td>
+                    <td data-label="Date">25/01/2026</td>
+                    <td data-label="Actions">
+                        <button class="btn btn-sm btn-info">Voir</button>
+                        <button class="btn btn-sm btn-danger">Supprimer</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Nom"><strong>Marie Martin</strong></td>
+                    <td data-label="Email">marie@example.com</td>
+                    <td data-label="Sujet">Information prix</td>
+                    <td data-label="Statut"><span class="badge badge-danger">Lu</span></td>
+                    <td data-label="Date">24/01/2026</td>
+                    <td data-label="Actions">
+                        <button class="btn btn-sm btn-info">Voir</button>
+                        <button class="btn btn-sm btn-danger">Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Tableau Commandes -->
+        <h2 style="color: var(--primary-color); margin-top: 2rem; margin-bottom: 1rem; font-size: 1.3rem;">Commandes</h2>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="ID"><strong>#1001</strong></td>
+                    <td data-label="Montant">2500 USD</td>
+                    <td data-label="Statut"><span class="badge badge-success">Confirmée</span></td>
+                    <td data-label="Date">20/01/2026</td>
+                    <td data-label="Actions">
+                        <button class="btn btn-sm btn-info">Détails</button>
+                        <button class="btn btn-sm btn-danger">Annuler</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="ID"><strong>#1002</strong></td>
+                    <td data-label="Montant">1800 USD</td>
+                    <td data-label="Statut"><span class="badge badge-danger">En attente</span></td>
+                    <td data-label="Date">19/01/2026</td>
+                    <td data-label="Actions">
+                        <button class="btn btn-sm btn-info">Détails</button>
+                        <button class="btn btn-sm btn-danger">Annuler</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function updateViewport() {
+            document.getElementById('width').textContent = window.innerWidth;
+            document.getElementById('height').textContent = window.innerHeight;
+        }
+
+        window.addEventListener('resize', updateViewport);
+        window.addEventListener('load', updateViewport);
+    </script>
+</body>
+</html>

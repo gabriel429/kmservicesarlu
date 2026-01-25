@@ -2,7 +2,7 @@
 
 <main style="position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;">
     <!-- Image de fond -->
-    <img src="<?php echo APP_URL; ?>assets/images/login.jpeg" alt="Login Background" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+    <img src="<?php echo ASSET_URL; ?>assets/images/login.jpeg" alt="Login Background" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
     
     <!-- Overlay semi-transparent pour améliorer la lisibilité -->
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); z-index: 2;"></div>
@@ -93,7 +93,7 @@ document.getElementById('loginFormAjax').addEventListener('submit', async functi
         submitBtn.textContent = 'Connexion...';
         msgBox.style.display = 'none';
 
-        const response = await fetch('<?php echo APP_URL; ?>handlers/login.php', {
+        const response = await fetch('<?php echo ASSET_URL; ?>handlers/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

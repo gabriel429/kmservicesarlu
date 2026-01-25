@@ -25,7 +25,7 @@
                         </div>
                     <?php else: ?>
                         <div class="main-image">
-                            <img src="<?php echo APP_URL; ?>assets/images/placeholder_product.svg" alt="Image indisponible">
+                            <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_product.svg" alt="Image indisponible">
                         </div>
                     <?php endif; ?>
                 </div>
@@ -115,7 +115,7 @@
                                                  sizes="(max-width: 768px) 100vw, 400px">
                                         <?php endif; ?>
                                     <?php else: ?>
-                                        <img src="<?php echo APP_URL; ?>assets/images/placeholder_product.svg" alt="Image indisponible">
+                                        <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_product.svg" alt="Image indisponible">
                                     <?php endif; ?>
                                 </div>
                                 <div class="product-content">

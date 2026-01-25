@@ -1,9 +1,11 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /kmservices/
     
-    # Rediriger les requêtes vers index.php
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+    # Ne rien faire pour les fichiers physiques réels
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Rediriger vers public/ si on n'y est pas déjà
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
 </IfModule>

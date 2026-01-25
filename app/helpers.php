@@ -206,7 +206,9 @@ function getStatusLabel($status) {
         'complete' => 'Complète',
         'refuse' => 'Refusée',
         'realise' => 'Réalisé',
+        'termine' => 'Réalisé',
         'en_cours' => 'En cours',
+        'en_attente' => 'En attente',
     ];
     
     return $labels[$status] ?? ucfirst($status);

@@ -4,6 +4,7 @@
         <div class="error-container">
             <h1>404</h1>
             <h2>Page non trouvée</h2>
+            <!-- URI: <?php echo htmlspecialchars($_SERVER['REQUEST_URI'] ?? ''); ?> -->
             <p>Désolé, la page que vous recherchez n'existe pas ou a été supprimée.</p>
             <div class="error-actions">
                 <a href="<?php echo APP_URL; ?>" class="btn btn-primary">Retour à l'accueil</a>

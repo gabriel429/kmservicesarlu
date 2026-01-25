@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Visibilité Listes Mobile - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #f59e0b;
+            --dark-bg: #111827;
+            --light-bg: #f9fafb;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .admin-container {
+            display: block;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin-left: 250px;
+        }
+
+        .admin-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .admin-header {
+            background-color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .admin-sidebar {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .admin-sidebar h2 {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
+        }
+
+        .admin-sidebar ul {
+            list-style: none;
+        }
+
+        .admin-sidebar a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #d1d5db;
+            text-decoration: none;
+        }
+
+        .admin-content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .admin-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .viewport-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            z-index: 9999;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-main-content {
+                margin-left: 0;
+                padding-bottom: 2rem;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-height: 0;
+                overflow: hidden;
+                background-color: var(--dark-bg);
+                border-top: 2px solid var(--secondary-color);
+                z-index: 999;
+                transition: max-height 0.3s ease-in-out;
+                visibility: hidden;
+            }
+
+            .admin-sidebar.active {
+                max-height: 60vh;
+                overflow-y: auto;
+                visibility: visible;
+            }
+
+            .admin-menu-toggle {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-bottom: 400px;
+                padding-bottom: 2rem;
+            }
+
+            .admin-content {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.1rem;
+            }
+
+            .admin-content {
+                padding: 0.75rem;
+            }
+
+            .info-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .admin-table {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header h1 {
+                font-size: 1rem;
+            }
+
+            .admin-content {
+                padding: 0.5rem;
+            }
+
+            .info-section {
+                padding: 0.75rem;
+            }
+
+            .admin-table {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="viewport-indicator" id="viewport">
+        <span id="width">-</span>px
+    </div>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <h2>KM Services</h2>
+            <ul>
+                <li><a href="#dashboard">Tableau de Bord</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#produits">Produits</a></li>
+                <li><a href="#contacts">Messages</a></li>
+                <li><a href="#forages">Demandes de Forage</a></li>
+                <li><a href="#commandes">Commandes</a></li>
+                <li><a href="#utilisateurs">Utilisateurs</a></li>
+                <li><a href="#logs">Journal des actions</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-main-content">
+            <header class="admin-header">
+                <button class="admin-menu-toggle" id="adminMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>Tableau de Bord</h1>
+            </header>
+
+            <main class="admin-content">
+                <div class="info-section">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1rem;">✅ Améliorations Visibilité Mobile</h2>
+                    <p><strong>✓ Margin-bottom: 400px</strong> sur .admin-main-content</p>
+                    <p><strong>✓ Padding-bottom: 2rem</strong> pour espace supplémentaire</p>
+                    <p><strong>✓ Drawer max-height: 60vh</strong> (réduit de 70vh)</p>
+                    <p><strong>✓ Visibility: hidden</strong> quand le drawer est fermé</p>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        Cela garantit que tous les contenus et listes sont visibles au-dessus du menu drawer sur mobile.
+                    </p>
+                </div>
+
+                <div class="info-section">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Liste des Produits</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Prix</th>
+                                <th>Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Forage Standard</td>
+                                <td>$2,500</td>
+                                <td>15</td>
+                            </tr>
+                            <tr>
+                                <td>Forage Premium</td>
+                                <td>$3,500</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>Consultation</td>
+                                <td>$500</td>
+                                <td>20</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-section">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Statistiques Récentes</h2>
+                    <p>📊 Ventes ce mois : <strong>15,000 USD</strong></p>
+                    <p>📋 Commandes en attente : <strong>3</strong></p>
+                    <p>💬 Messages non lus : <strong>7</strong></p>
+                </div>
+
+                <div class="info-section">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Instructions Mobile</h2>
+                    <ol style="margin-left: 1.5rem; line-height: 1.8;">
+                        <li>Réduisez votre navigateur à ≤1024px</li>
+                        <li>Cliquez sur le hamburger ☰ pour voir le menu</li>
+                        <li>Le menu prend 60vh maximum (pas 70vh)</li>
+                        <li>Tout votre contenu reste visible</li>
+                        <li>Fermez le menu pour voir la liste complètement</li>
+                    </ol>
+                </div>
+
+                <div class="info-section" style="margin-bottom: 10rem;">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Plus de Contenu</h2>
+                    <p>Ce contenu bas de page devrait être visible même sur mobile avec le menu drawer ouvert.</p>
+                    <p>Cliquez sur le menu hamburger pour le vérifier ! 👆</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Update viewport
+        function updateViewport() {
+            document.getElementById('width').textContent = window.innerWidth;
+        }
+        window.addEventListener('resize', updateViewport);
+        window.addEventListener('load', updateViewport);
+
+        // Menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.getElementById('adminMenuToggle');
+            const sidebar = document.querySelector('.admin-sidebar');
+            
+            if (toggle && sidebar) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.toggle('active');
+                    const icon = toggle.querySelector('i');
+                    if (sidebar.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('active')) {
+                        if (!e.target.closest('.admin-sidebar') && !e.target.closest('.admin-menu-toggle')) {
+                            sidebar.classList.remove('active');
+                            const icon = toggle.querySelector('i');
+                            icon.classList.add('fa-bars');
+                            icon.classList.remove('fa-times');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

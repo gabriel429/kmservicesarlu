@@ -50,12 +50,12 @@ async function loadLogs() {
   for (const r of rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${r.id}</td>
-      <td>${r.admin_user_id ?? ''}</td>
-      <td>${key ? (r[key] ?? '') : ''}</td>
-      <td>${r.action}</td>
-      <td>${r.details ? r.details : ''}</td>
-      <td>${r.created_at}</td>
+      <td data-label="ID">${r.id}</td>
+      <td data-label="Admin">${r.admin_user_id ?? ''}</td>
+      <td data-label="Cible">${key ? (r[key] ?? '') : ''}</td>
+      <td data-label="Action">${r.action}</td>
+      <td data-label="Détails">${r.details ? r.details : ''}</td>
+      <td data-label="Date">${r.created_at}</td>
     `;
     body.appendChild(tr);
   }

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mobile Menu Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #f59e0b;
+            --dark-bg: #111827;
+            --light-bg: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .admin-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .admin-sidebar h2 {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+
+        .admin-sidebar ul {
+            list-style: none;
+        }
+
+        .admin-sidebar li {
+            padding: 0.5rem 0;
+        }
+
+        .admin-sidebar a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .admin-sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-main-content {
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Mobile Menu Toggle Button */
+        .admin-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+            width: auto;
+            height: auto;
+            line-height: 1;
+        }
+
+        .admin-menu-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .admin-header {
+            background-color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .admin-content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .test-button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-height: 0;
+                overflow: hidden;
+                border-top: 1px solid var(--border-color);
+                z-index: 999;
+                transition: max-height 0.3s ease;
+            }
+
+            .admin-sidebar.active {
+                max-height: 65vh;
+                overflow-y: auto;
+            }
+
+            .admin-menu-toggle {
+                display: block;
+            }
+
+            .admin-main-content {
+                margin-bottom: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-menu-toggle {
+                order: -1;
+                margin-right: 0.5rem;
+                font-size: 1.5rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .admin-header {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.1rem;
+                order: 0;
+                flex: 1;
+            }
+
+            .test-button-group {
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                flex-shrink: 0;
+            }
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.25rem;
+        }
+
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <h2>KM Services</h2>
+            <ul>
+                <li><a href="#dashboard">Tableau de Bord</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#produits">Produits</a></li>
+                <li><a href="#contacts">Messages</a></li>
+                <li><a href="#forages">Demandes de Forage</a></li>
+                <li><a href="#commandes">Commandes</a></li>
+                <li><a href="#utilisateurs">Utilisateurs</a></li>
+                <li><a href="#logs">Journal des actions</a></li>
+                <li><a href="#logout" style="color: #ef4444;">Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-main-content">
+            <header class="admin-header">
+                <button class="admin-menu-toggle" id="adminMenuToggle" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>Test Menu Mobile</h1>
+                <div style="color: #666; font-size: 0.9rem;">
+                    User (admin)
+                </div>
+            </header>
+
+            <main class="admin-content">
+                <div class="info-box">
+                    <strong>📱 Redimensionnez votre navigateur pour tester le responsive :</strong>
+                    <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                        <li>Desktop : 1024px+</li>
+                        <li>Tablet : 768-1024px</li>
+                        <li>Mobile : &lt;768px</li>
+                    </ul>
+                </div>
+
+                <div class="test-section">
+                    <h2>Test du Menu Hamburger</h2>
+                    <p>✅ Le bouton hamburger devrait apparaître sur mobile (≤1024px)</p>
+                    <p>✅ Cliquez sur le bouton pour ouvrir/fermer le menu</p>
+                    <p>✅ Le menu devrait se fermer en cliquant dehors</p>
+                    <p>✅ Le menu devrait se fermer en appuyant sur Escape</p>
+                </div>
+
+                <div class="test-section">
+                    <h2>Test des Boutons</h2>
+                    <div class="test-button-group">
+                        <button class="btn">Bouton 1</button>
+                        <button class="btn">Bouton 2</button>
+                        <button class="btn">Bouton 3</button>
+                        <button class="btn">Bouton 4</button>
+                        <button class="btn">Bouton 5</button>
+                    </div>
+                    <p>✅ Les boutons doivent se wrapper sur mobile</p>
+                    <p>✅ Les boutons ne doivent pas être 100% de largeur</p>
+                </div>
+
+                <div class="test-section">
+                    <h2>Informations du Viewport</h2>
+                    <p>Largeur actuelle: <span id="width">-</span>px</p>
+                    <p>Hauteur actuelle: <span id="height">-</span>px</p>
+                    <p>Device Pixel Ratio: <span id="dpr">-</span></p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Update viewport info
+        function updateViewportInfo() {
+            document.getElementById('width').textContent = window.innerWidth;
+            document.getElementById('height').textContent = window.innerHeight;
+            document.getElementById('dpr').textContent = window.devicePixelRatio;
+        }
+
+        window.addEventListener('resize', updateViewportInfo);
+        window.addEventListener('load', updateViewportInfo);
+
+        // Admin Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminMenuToggle = document.getElementById('adminMenuToggle');
+            const adminSidebar = document.querySelector('.admin-sidebar');
+            
+            if (adminMenuToggle) {
+                adminMenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    adminSidebar.classList.toggle('active');
+                    
+                    // Update icon
+                    const icon = adminMenuToggle.querySelector('i');
+                    if (adminSidebar.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+
+                // Close menu when clicking a link
+                const sidebarLinks = adminSidebar.querySelectorAll('a');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        adminSidebar.classList.remove('active');
+                        const icon = adminMenuToggle.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    });
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.admin-sidebar') && !e.target.closest('.admin-menu-toggle')) {
+                        adminSidebar.classList.remove('active');
+                        const icon = adminMenuToggle.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+
+                // Close menu on escape
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        adminSidebar.classList.remove('active');
+                        const icon = adminMenuToggle.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

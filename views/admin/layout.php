@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' data: https://cdnjs.cloudflare.com; img-src 'self' data: blob:;">
     <title><?php echo isset($adminPageTitle) ? $adminPageTitle . ' | ' : ''; ?>Admin - KM Services</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -30,8 +31,7 @@
         }
 
         .admin-container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
+            display: block;
             min-height: 100vh;
         }
 
@@ -40,7 +40,27 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            margin-left: 0;
+            margin-left: 250px;
+        }
+
+        /* Mobile Menu Toggle Button */
+        .admin-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+            width: auto;
+            height: auto;
+            line-height: 1;
+        }
+
+        .admin-menu-toggle:hover {
+            color: var(--primary-color);
         }
 
         .admin-header {
@@ -48,12 +68,14 @@
             padding: 1.5rem 2rem;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .admin-header h1 {
@@ -217,7 +239,564 @@
         .stat-card p {
             font-size: 0.9rem;
         }
+
+        /* ============================================================================
+           RESPONSIVE DESIGN - TABLET (1024px)
+           ============================================================================ */
+        @media (max-width: 1024px) {
+            .admin-main-content {
+                margin-left: 0;
+                padding-bottom: 0;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: auto;
+                max-height: 0;
+                overflow: hidden;
+                background-color: var(--dark-bg);
+                border-top: 2px solid var(--secondary-color);
+                z-index: 999;
+                transition: max-height 0.3s ease-in-out;
+                visibility: hidden;
+            }
+
+            .admin-sidebar.active {
+                max-height: 60vh;
+                overflow-y: auto;
+                visibility: visible;
+            }
+
+            .admin-sidebar h2 {
+                padding: 1rem 1.5rem;
+                margin-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .admin-sidebar ul {
+                padding: 0;
+            }
+
+            .admin-sidebar li {
+                margin-bottom: 0;
+            }
+
+            .admin-sidebar a {
+                font-size: 0.9rem;
+                padding: 0.75rem 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .admin-menu-toggle {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-bottom: 0;
+                padding-bottom: calc(65vh + 1rem);
+            }
+
+            .admin-content {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .admin-table {
+                font-size: 0.85rem;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                font-size: 16px;
+            }
+
+            .card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .btn-small {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                margin-right: 0.25rem;
+                margin-bottom: 0.25rem;
+            }
+        }
+
+        /* ============================================================================
+           RESPONSIVE DESIGN - MOBILE (768px and below)
+           ============================================================================ */
+        @media (max-width: 768px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-height: 0;
+                overflow: hidden;
+                background-color: var(--dark-bg);
+                border-top: 2px solid var(--secondary-color);
+                z-index: 999;
+                transition: max-height 0.3s ease-in-out;
+                visibility: hidden;
+                pointer-events: none;
+            }
+
+            .admin-sidebar.active {
+                max-height: 60vh;
+                overflow-y: auto;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
+            .admin-sidebar h2 {
+                padding: 1rem 1.5rem;
+                margin-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .admin-sidebar ul {
+                padding: 0;
+            }
+
+            .admin-sidebar li {
+                margin-bottom: 0;
+            }
+
+            .admin-sidebar a {
+                font-size: 0.9rem;
+                padding: 0.75rem 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .admin-menu-toggle {
+                display: block;
+                order: -1;
+                margin-right: 0.5rem;
+                font-size: 1.5rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .admin-header {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.1rem;
+                margin: 0;
+                order: 0;
+                flex: 1;
+            }
+
+            .admin-header > div {
+                font-size: 0.75rem;
+                order: 2;
+                width: 100%;
+                text-align: left;
+            }
+
+            .admin-main-content {
+                margin-bottom: 0;
+                padding-bottom: calc(65vh + 1rem);
+            }
+
+            .admin-content {
+                padding: 0.75rem;
+                padding-bottom: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .admin-table {
+                font-size: 0.75rem;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 0.5rem 0.25rem;
+                white-space: nowrap;
+            }
+
+            .admin-table th {
+                font-size: 0.7rem;
+            }
+
+            /* Horizontal scrolling for tables */
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .admin-table thead,
+            .admin-table tbody,
+            .admin-table th,
+            .admin-table td,
+            .admin-table tr {
+                display: block;
+            }
+
+            .admin-table thead {
+                display: none;
+            }
+
+            .admin-table tbody tr {
+                border: 1px solid var(--border-color);
+                margin-bottom: 1rem;
+                border-radius: 0.25rem;
+            }
+
+            .admin-table td {
+                padding-left: 50%;
+                position: relative;
+                border: none;
+                border-bottom: 1px solid var(--border-color);
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+                padding-right: 0.5rem;
+                word-wrap: break-word;
+            }
+
+            .admin-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 48%;
+                padding: 0.5rem;
+                font-weight: 600;
+                font-size: 0.8rem;
+                word-wrap: break-word;
+                pointer-events: none;
+            }
+
+            .admin-table td[data-label="Actions"] {
+                padding-left: 100%;
+            }
+
+            .admin-table td[data-label="Actions"]::before {
+                width: 100%;
+            }
+
+            .admin-table .btn {
+                display: inline-block;
+                padding: 0.35rem 0.5rem;
+                font-size: 0.7rem;
+                margin-right: 0.25rem;
+                margin-bottom: 0.25rem;
+                width: auto;
+            }
+
+            .admin-table .badge {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.6rem;
+                font-size: 16px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .form-row input {
+                width: 100%;
+            }
+
+            .card {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .card h2 {
+                font-size: 1.1rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .card h3 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .btn-small {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.7rem;
+                margin-right: 0.15rem;
+                margin-bottom: 0.2rem;
+                display: inline-block;
+                min-width: auto;
+                white-space: normal;
+                word-wrap: break-word;
+            }
+
+            .btn-primary,
+            .btn-success,
+            .btn-danger {
+                display: inline-block;
+                padding: 0.5rem 0.75rem;
+                margin-bottom: 0.25rem;
+                font-size: 0.85rem;
+            }
+
+            /* Actions cell styling */
+            .admin-table td[data-label="Actions"] {
+                padding-left: 50%;
+            }
+
+            .admin-table td[data-label="Actions"]::before {
+                content: "Actions";
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding: 0.5rem;
+                font-weight: 600;
+                background-color: var(--light-bg);
+            }
+
+            /* Button group responsive */
+            .btn-group,
+            .action-buttons {
+                display: flex;
+                gap: 0.25rem;
+                flex-wrap: wrap;
+            }
+
+            .btn-group .btn,
+            .action-buttons .btn {
+                flex-shrink: 1;
+                padding: 0.3rem 0.5rem;
+                font-size: 0.7rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .stat-card h3 {
+                font-size: 1.5rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .stat-card p {
+                font-size: 0.75rem;
+            }
+
+            /* Stats container scrollable on mobile */
+            .stats-container {
+                display: flex;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+        }
+
+        /* ============================================================================
+           RESPONSIVE DESIGN - SMALL MOBILE (480px and below)
+           ============================================================================ */
+        @media (max-width: 480px) {
+            .admin-header h1 {
+                font-size: 0.95rem;
+            }
+
+            .admin-header div {
+                font-size: 0.65rem;
+            }
+
+            .admin-table {
+                font-size: 0.65rem;
+            }
+
+            .admin-table td {
+                padding-left: 45%;
+                padding-top: 0.4rem;
+                padding-bottom: 0.4rem;
+                padding-right: 0.3rem;
+            }
+
+            .admin-table td::before {
+                width: 43%;
+                font-size: 0.65rem;
+                padding: 0.3rem;
+                pointer-events: none;
+            }
+
+            .admin-table td[data-label="Actions"] {
+                padding-left: 100%;
+            }
+
+            .admin-table td[data-label="Actions"]::before {
+                width: 100%;
+            }
+
+            .admin-table .btn {
+                padding: 0.25rem 0.35rem;
+                font-size: 0.6rem;
+                margin-right: 0.15rem;
+                margin-bottom: 0.15rem;
+            }
+
+            .admin-table .badge {
+                padding: 0.2rem 0.35rem;
+                font-size: 0.6rem;
+            }
+
+            .card {
+                padding: 0.5rem;
+            }
+
+            .card h2,
+            .card h3 {
+                font-size: 0.9rem;
+            }
+
+            .btn-small {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.6rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.5rem;
+                font-size: 16px;
+            }
+
+            .stat-card {
+                min-width: 120px;
+                padding: 0.75rem;
+                margin-right: 0.25rem;
+                font-size: 0.75rem;
+            }
+
+            .stat-card h3 {
+                font-size: 1.2rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .stat-card p {
+                font-size: 0.65rem;
+            }
+
+            .admin-sidebar h2 {
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.5rem;
+                font-size: 1rem;
+            }
+
+            .admin-sidebar a {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
     </style>
+    <script>
+        const APP_URL = '<?php echo APP_URL; ?>';
+        const ASSET_URL = '<?php echo ASSET_URL; ?>';
+
+        // Admin Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminMenuToggle = document.getElementById('adminMenuToggle');
+            const adminSidebar = document.querySelector('.admin-sidebar');
+            
+            if (!adminMenuToggle || !adminSidebar) {
+                console.error('Admin menu elements not found');
+                return;
+            }
+
+            // Toggle menu on button click
+            adminMenuToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                adminSidebar.classList.toggle('active');
+                updateIcon();
+                console.log('Menu toggled, active:', adminSidebar.classList.contains('active'));
+            });
+
+            function updateIcon() {
+                const icon = adminMenuToggle.querySelector('i');
+                if (!icon) return;
+                
+                if (adminSidebar.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
+            }
+
+            // Close menu when clicking a link
+            const sidebarLinks = adminSidebar.querySelectorAll('a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Don't prevent default, let the navigation happen
+                    adminSidebar.classList.remove('active');
+                    updateIcon();
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (adminSidebar.classList.contains('active')) {
+                    if (!e.target.closest('.admin-sidebar') && !e.target.closest('.admin-menu-toggle')) {
+                        adminSidebar.classList.remove('active');
+                        updateIcon();
+                    }
+                }
+            });
+
+            // Close menu on escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && adminSidebar.classList.contains('active')) {
+                    adminSidebar.classList.remove('active');
+                    updateIcon();
+                }
+            });
+
+            // Mark active page
+            const currentUrl = window.location.pathname;
+            sidebarLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                if (linkPath && currentUrl.includes(linkPath)) {
+                    link.classList.add('active');
+                }
+            });
+
+            console.log('Admin menu initialized successfully');
+        });
+    </script>
 </head>
 <body>
     <div class="admin-container">
@@ -246,6 +825,9 @@
         <!-- Main Content -->
         <div class="admin-main-content">
             <header class="admin-header">
+                <button class="admin-menu-toggle" id="adminMenuToggle" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h1><?php echo isset($adminPageTitle) ? $adminPageTitle : 'Tableau de Bord'; ?></h1>
                 <div style="color: var(--text-secondary);">
                     <?php $u = $_SESSION['admin_username'] ?? 'Utilisateur'; $r = $_SESSION['admin_role'] ?? 'editor'; ?>

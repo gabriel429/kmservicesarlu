@@ -86,6 +86,7 @@ try {
                 $email = $_POST['email'] ?? '';
                 $role = $_POST['role'] ?? 'editor';
                 $password = $_POST['password'] ?? '';
+                $active = $_POST['active'] ?? 1;
                 
                 if (!$id) {
                     throw new Exception('ID de l\'utilisateur requis');
@@ -94,15 +95,15 @@ try {
                 if ($password) {
                     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                     MySQLCore::execute(
-                        "UPDATE users SET username = ?, email = ?, role = ?, password = ? 
+                        "UPDATE users SET username = ?, email = ?, role = ?, password = ?, active = ? 
                          WHERE id = ?",
-                        [$username, $email, $role, $hashedPassword, $id]
+                        [$username, $email, $role, $hashedPassword, $active, $id]
                     );
                 } else {
                     MySQLCore::execute(
-                        "UPDATE users SET username = ?, email = ?, role = ? 
+                        "UPDATE users SET username = ?, email = ?, role = ?, active = ? 
                          WHERE id = ?",
-                        [$username, $email, $role, $id]
+                        [$username, $email, $role, $active, $id]
                     );
                 }
                 
@@ -144,7 +145,7 @@ try {
             }
             
             $user = MySQLCore::fetch(
-                "SELECT id, username, email, role FROM users WHERE id = ?",
+                "SELECT id, username, email, role, active FROM users WHERE id = ?",
                 [$id]
             );
             $response = [

@@ -51,8 +51,7 @@ try {
     } catch (Throwable $e) { /* ignore */ }
 
     if ($user && password_verify($password, $user['password'])) {
-        // Démarrer la session
-        session_start();
+        // La session est déjà démarrée
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_username'] = $user['username'];
         $_SESSION['admin_role'] = $user['role'];

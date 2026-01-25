@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mobile Menu - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #f59e0b;
+            --dark-bg: #111827;
+            --light-bg: #f9fafb;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .admin-container {
+            display: block;
+            min-height: 100vh;
+        }
+
+        .admin-main-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin-left: 250px;
+        }
+
+        .admin-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+            width: auto;
+            height: auto;
+            line-height: 1;
+        }
+
+        .admin-menu-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .admin-header {
+            background-color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .admin-sidebar {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .admin-sidebar h2 {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+
+        .admin-sidebar ul {
+            list-style: none;
+        }
+
+        .admin-sidebar li {
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-sidebar a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #d1d5db;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .admin-sidebar a:hover,
+        .admin-sidebar a.active {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding-left: 2rem;
+        }
+
+        .admin-content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .test-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .test-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .test-section p {
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            margin: 0.5rem 0;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .success {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-main-content {
+                margin-left: 0;
+                padding-bottom: 0;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: auto;
+                max-height: 0;
+                overflow: hidden;
+                background-color: var(--dark-bg);
+                border-top: 2px solid var(--secondary-color);
+                z-index: 999;
+                transition: max-height 0.3s ease-in-out;
+                visibility: hidden;
+            }
+
+            .admin-sidebar.active {
+                max-height: 70vh;
+                overflow-y: auto;
+                visibility: visible;
+            }
+
+            .admin-sidebar h2 {
+                padding: 1rem 1.5rem;
+                margin-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .admin-sidebar ul {
+                padding: 0;
+            }
+
+            .admin-sidebar li {
+                margin-bottom: 0;
+            }
+
+            .admin-sidebar a {
+                font-size: 0.9rem;
+                padding: 0.75rem 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .admin-menu-toggle {
+                display: block !important;
+            }
+
+            .admin-main-content {
+                margin-bottom: 0;
+            }
+
+            .admin-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                gap: 0.5rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1rem;
+                order: 0;
+                flex: 1;
+            }
+
+            .admin-content {
+                padding: 1rem;
+            }
+
+            .test-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <h2>KM Services</h2>
+            <ul>
+                <li><a href="#dashboard">Tableau de Bord</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#produits">Produits</a></li>
+                <li><a href="#contacts">Messages</a></li>
+                <li><a href="#forages">Demandes de Forage</a></li>
+                <li><a href="#commandes">Commandes</a></li>
+                <li><a href="#utilisateurs">Utilisateurs</a></li>
+                <li><a href="#logs">Journal des actions</a></li>
+                <li><a href="#logout" style="color: #ef4444;">Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-main-content">
+            <header class="admin-header">
+                <button class="admin-menu-toggle" id="adminMenuToggle" aria-label="Toggle menu" type="button">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>Test Dashboard Mobile</h1>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                    TestUser (admin)
+                </div>
+            </header>
+
+            <main class="admin-content">
+                <div class="test-section">
+                    <h2>📱 Test Menu Mobile</h2>
+                    <div class="info-badge">
+                        <strong>Largeur actuelle : <span id="width">-</span>px</strong>
+                    </div>
+                    <p>
+                        ✓ Sur <strong>mobile (≤1024px)</strong> : Cliquez sur le bouton hamburger <strong>☰</strong>
+                    </p>
+                    <p>
+                        ✓ Le menu doit <span class="success">apparaître en bas de l'écran</span>
+                    </p>
+                    <p>
+                        ✓ L'icône doit devenir <strong>✕</strong> et revenir à <strong>☰</strong> en fermant
+                    </p>
+                </div>
+
+                <div class="test-section">
+                    <h2>✅ Fonctionnalités du Menu</h2>
+                    <p><span class="success">✓</span> Clic sur le hamburger : ouvre/ferme le menu</p>
+                    <p><span class="success">✓</span> Clic sur un lien : ferme automatiquement le menu</p>
+                    <p><span class="success">✓</span> Clic dehors : ferme le menu</p>
+                    <p><span class="success">✓</span> Touche Escape : ferme le menu</p>
+                </div>
+
+                <div class="test-section">
+                    <h2>🔧 Déboggage</h2>
+                    <p>Ouvrez la console (F12) pour voir les messages de débogage</p>
+                    <p>Si vous voyez <span class="error">"Admin menu elements not found"</span>, il y a un problème HTML</p>
+                    <p>Si vous voyez <span class="success">"Admin menu initialized successfully"</span>, c'est bon ! ✓</p>
+                </div>
+
+                <div class="test-section">
+                    <h2>📝 Recommandations</h2>
+                    <ul style="margin-left: 1.5rem; line-height: 2;">
+                        <li>Testez sur iPhone 12/14 Pro (390px)</li>
+                        <li>Testez sur Galaxy S21 (360px)</li>
+                        <li>Testez sur iPad (768px)</li>
+                        <li>Utilisez les outils développeur (F12) pour simuler mobile</li>
+                    </ul>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Update viewport width
+        function updateViewport() {
+            document.getElementById('width').textContent = window.innerWidth;
+        }
+        window.addEventListener('resize', updateViewport);
+        window.addEventListener('load', updateViewport);
+
+        // Admin Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminMenuToggle = document.getElementById('adminMenuToggle');
+            const adminSidebar = document.querySelector('.admin-sidebar');
+            
+            if (!adminMenuToggle || !adminSidebar) {
+                console.error('Admin menu elements not found');
+                return;
+            }
+
+            console.log('Admin menu elements found - initializing...');
+
+            // Toggle menu on button click
+            adminMenuToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                adminSidebar.classList.toggle('active');
+                updateIcon();
+                console.log('Menu toggled, active:', adminSidebar.classList.contains('active'));
+            });
+
+            function updateIcon() {
+                const icon = adminMenuToggle.querySelector('i');
+                if (!icon) return;
+                
+                if (adminSidebar.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
+            }
+
+            // Close menu when clicking a link
+            const sidebarLinks = adminSidebar.querySelectorAll('a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    adminSidebar.classList.remove('active');
+                    updateIcon();
+                    console.log('Link clicked, menu closed');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (adminSidebar.classList.contains('active')) {
+                    if (!e.target.closest('.admin-sidebar') && !e.target.closest('.admin-menu-toggle')) {
+                        adminSidebar.classList.remove('active');
+                        updateIcon();
+                        console.log('Clicked outside, menu closed');
+                    }
+                }
+            });
+
+            // Close menu on escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && adminSidebar.classList.contains('active')) {
+                    adminSidebar.classList.remove('active');
+                    updateIcon();
+                    console.log('Escape pressed, menu closed');
+                }
+            });
+
+            console.log('Admin menu initialized successfully');
+        });
+    </script>
+</body>
+</html>

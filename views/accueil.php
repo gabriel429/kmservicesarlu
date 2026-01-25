@@ -4,8 +4,8 @@
         <h1>KM Services</h1>
         <p>KM SERVICES est votre partenaire de confiance pour tous vos projets de construction et d’infrastructures. Spécialisée dans la construction, la plomberie, l’électrification, la maintenance, le forage ainsi que la fourniture de matériels et matériaux de construction, notre entreprise met son expertise, son professionnalisme et son sens du détail au service de réalisations durables, modernes et conformes aux normes.</p>
         <div class="hero-buttons">
-            <a href="<?php echo APP_URL; ?>contact" class="btn btn-primary">Demander un Devis</a>
-            <a href="<?php echo APP_URL; ?>projets" class="btn btn-secondary">Voir Nos Projets</a>
+            <a href="<?php echo APP_URL; ?>devis" class="filter-btn active">Demander un Devis</a>
+            <a href="<?php echo APP_URL; ?>projets" class="filter-btn active">Voir Nos Projets</a>
         </div>
     </div>
 </section>

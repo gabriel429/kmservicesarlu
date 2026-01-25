@@ -1,69 +1,44 @@
-<?php
-/**
- * Routeur simple pour KM Services
- */
-
-namespace App;
-
+<?php namespace App;
 class Router {
     private $routes = [];
-    private $method;
-    private $uri;
-
-    public function __construct() {
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    public function add($path, $view) {
+        $this->routes[$path] = $view;
+    }
+    public function dispatch($uri) {
+        $uri = parse_url($uri, PHP_URL_PATH);
         
-        // Supprimer la barre oblique au début si elle existe
-        $this->uri = ltrim($this->uri, '/');
-        
-        if (empty($this->uri)) {
-            $this->uri = 'accueil';
-        }
-    }
+        // On cherche à savoir quel morceau de l'URL est la page
+        // On compare l'URI avec le chemin du script actuel
+        $scriptPath = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']); // /kmservices/public/index.php
+        $scriptDir = str_replace('\\', '/', dirname($scriptPath));     // /kmservices/public
+        $baseDir = str_replace('/public', '', $scriptDir);              // /kmservices
 
-    public function get($route, $controller) {
-        $this->addRoute('GET', $route, $controller);
-    }
-
-    public function post($route, $controller) {
-        $this->addRoute('POST', $route, $controller);
-    }
-
-    private function addRoute($method, $route, $controller) {
-        $this->routes[$method][$route] = $controller;
-    }
-
-    public function dispatch() {
-        $method = $this->method;
-        
-        // Chercher une correspondance exacte
-        if (isset($this->routes[$method][$this->uri])) {
-            return $this->routes[$method][$this->uri];
+        // Enlever le dossier de base de l'URL
+        if ($baseDir !== '/' && strpos($uri, $baseDir) === 0) {
+            $uri = substr($uri, strlen($baseDir));
         }
 
-        // Chercher une route paramétrisée
-        foreach ($this->routes[$method] ?? [] as $route => $controller) {
-            if ($this->matchRoute($route, $this->uri)) {
-                return $controller;
-            }
+        // Enlever /public de l'URL si présent
+        if (strpos($uri, '/public') === 0) {
+            $uri = substr($uri, 7);
         }
 
-        return 'accueil';
-    }
+        $uri = trim($uri, '/');
+        if ($uri === '' || $uri === 'index.php') $uri = 'accueil';
 
-    private function matchRoute($route, $uri) {
-        $route = preg_replace('/\{[a-zA-Z_][a-zA-Z0-9_]*\}/', '([0-9]+)', $route);
-        $route = '/^' . str_replace('/', '\/', $route) . '$/';
-        return preg_match($route, $uri);
-    }
+        // ... Gestion Admin
+        if (strpos($uri, 'admin') === 0) {
+            $parts = explode('/', $uri);
+            $page = isset($parts[1]) ? $parts[1] : 'dashboard';
+            $viewPath = __DIR__ . '/../views/admin/' . $page . '.php';
+            if (file_exists($viewPath)) return $viewPath;
+        }
 
-    public function getUri() {
-        return $this->uri;
-    }
-
-    public function getMethod() {
-        return $this->method;
+        $viewPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $uri . '.php';
+        $viewPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $viewPath);
+        
+        if (file_exists($viewPath)) return $viewPath;
+        
+        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . '404.php';
     }
 }
-?>
