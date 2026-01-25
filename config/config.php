@@ -1,8 +1,8 @@
 <?php
-if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
-if (!defined('DB_NAME')) define('DB_NAME', 'kmservices');
-if (!defined('DB_USER')) define('DB_USER', 'root');
-if (!defined('DB_PASS')) define('DB_PASS', '');
+if (!defined('DB_HOST')) define('DB_HOST', 'srv996.hstgr.io');
+if (!defined('DB_NAME')) define('DB_NAME', 'u424760992_kmservices');
+if (!defined('DB_USER')) define('DB_USER', 'u424760992_kmservices_use');
+if (!defined('DB_PASS')) define('DB_PASS', 'Kmservices@@Kin243');
 
 // Détection précise des chemins
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
