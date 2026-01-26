@@ -26,7 +26,6 @@
                 <li><a href="<?php echo APP_URL; ?>projets">Projets</a></li>
                 <li><a href="<?php echo APP_URL; ?>boutique">Boutique</a></li>
                 <li><a href="<?php echo APP_URL; ?>contact">Contact</a></li>
-                <li><a href="<?php echo APP_URL; ?>admin/login" class="" style="width: 100%; padding: 0.75rem; background-color: #1e3a8a; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s ease;">Admin</a></li>
             </ul>
             <button class="navbar-toggle" id="navToggle">
                 <span></span><span></span><span></span>
@@ -75,6 +74,7 @@
             <div class="footer-bottom">
                 <p>&copy; 2025 KM Services. Tous droits réservés.</p>
                 <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8;">Développée par <a href="https://www.akilig.com/" target="_blank" rel="noopener noreferrer" style="color: #0ea5e9; text-decoration: none; font-weight: 600;">Akili Groupe</a></p>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="<?php echo APP_URL; ?>admin/login" style="color: #64748b; text-decoration: none; opacity: 0.7; hover_opacity: 1; transition: opacity 0.3s ease;">Administration</a></p>
             </div>
         </div>
     </footer>

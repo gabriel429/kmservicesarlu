@@ -1,7 +1,12 @@
 <!-- Détail Produit -->
 <section class="product-detail-page">
     <div class="container">
-        <?php if (isset($product)): ?>
+        <?php 
+        // Charger le produit depuis les données passées ou depuis la session
+        $product = $_GET['_product'] ?? null;
+        $products = $_GET['_products'] ?? [];
+        
+        if ($product): ?>
             <div class="breadcrumb">
                 <a href="<?php echo APP_URL; ?>">Accueil</a> / 
                 <a href="<?php echo APP_URL; ?>boutique">Boutique</a> / 
@@ -14,12 +19,12 @@
                         <div class="main-image">
                             <?php $imgSrc = $product['image_principale']; $isUrl = is_string($imgSrc) && str_starts_with($imgSrc, 'http'); ?>
                             <?php if ($isUrl): ?>
-                                <img src="<?php echo APP_URL; ?>img?url=<?php echo urlencode($imgSrc); ?>&w=720&h=360&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" height="360"
-                                     srcset="<?php echo APP_URL; ?>img?url=<?php echo urlencode($imgSrc); ?>&w=360&h=360&q=85&format=webp 360w, <?php echo APP_URL; ?>img?url=<?php echo urlencode($imgSrc); ?>&w=720&h=360&q=85&format=webp 720w"
+                                <img src="/img?url=<?php echo urlencode($imgSrc); ?>&w=720&h=360&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" height="360"
+                                     srcset="/img?url=<?php echo urlencode($imgSrc); ?>&w=360&h=360&q=85&format=webp 360w, /img?url=<?php echo urlencode($imgSrc); ?>&w=720&h=360&q=85&format=webp 720w"
                                      sizes="(max-width: 768px) 100vw, 720px">
                             <?php else: ?>
-                                <img src="<?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&h=360&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" height="360"
-                                     srcset="<?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=360&h=360&q=85&format=webp 360w, <?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&h=360&q=85&format=webp 720w"
+                                <img src="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&h=360&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" height="360"
+                                     srcset="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=360&h=360&q=85&format=webp 360w, /img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&h=360&q=85&format=webp 720w"
                                      sizes="(max-width: 768px) 100vw, 720px">
                             <?php endif; ?>
                         </div>
@@ -106,12 +111,12 @@
                                     <?php if (!empty($p['image_principale'])): ?>
                                         <?php $rel = $p['image_principale']; $isUrl2 = is_string($rel) && str_starts_with($rel, 'http'); ?>
                                         <?php if ($isUrl2): ?>
-                                            <img src="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['nom']); ?>" loading="lazy" width="400" height="200"
-                                                 srcset="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
+                                            <img src="/img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['nom']); ?>" loading="lazy" width="400" height="200"
+                                                 srcset="/img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
                                                  sizes="(max-width: 768px) 100vw, 400px">
                                         <?php else: ?>
-                                            <img src="<?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['nom']); ?>" loading="lazy" width="400" height="200"
-                                                 srcset="<?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
+                                            <img src="/img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['nom']); ?>" loading="lazy" width="400" height="200"
+                                                 srcset="/img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
                                                  sizes="(max-width: 768px) 100vw, 400px">
                                         <?php endif; ?>
                                     <?php else: ?>

@@ -56,8 +56,8 @@ if (!isset($products) || empty($products) || !isset($categories)) {
                             <div class="product-card">
                                 <div class="product-image">
                                     <?php if (!empty($product['image_principale'])): ?>
-                                        <img src="<?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($product['nom']); ?>" loading="lazy" width="400" height="200"
-                                             srcset="<?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=400&h=200&q=85&format=webp 400w"
+                                        <img src="/img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($product['nom']); ?>" loading="lazy" width="400" height="200"
+                                             srcset="/img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=400&h=200&q=85&format=webp 400w"
                                              sizes="(max-width: 768px) 100vw, 400px">
                                     <?php else: ?>
                                         <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_product.svg" alt="Image indisponible">

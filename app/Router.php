@@ -34,6 +34,42 @@ class Router {
             if (file_exists($viewPath)) return $viewPath;
         }
 
+        // Gestion des routes dynamiques pour les produits
+        if (strpos($uri, 'produit/') === 0) {
+            $slug = substr($uri, 8);
+            $slug = explode('?', $slug)[0]; // Enlever query string
+            
+            // Charger le produit depuis la base de données
+            if (!class_exists('MySQLCore')) {
+                require_once __DIR__ . '/MySQL.php';
+            }
+            
+            try {
+                $product = MySQLCore::fetch(
+                    "SELECT id, nom, slug, description, prix, prix_promotion, stock, reference, image_principale, category_id 
+                     FROM products WHERE slug = ? AND actif = 1",
+                    [$slug]
+                );
+                
+                if ($product) {
+                    // Charger aussi les produits similaires
+                    $products = MySQLCore::fetchAll(
+                        "SELECT id, nom, slug, description, prix, stock, image_principale 
+                         FROM products WHERE actif = 1 ORDER BY ordre ASC, created_at DESC LIMIT 10"
+                    );
+                    
+                    // Stocker les données dans les variables globales
+                    $_GET['_product'] = $product;
+                    $_GET['_products'] = $products;
+                    
+                    return __DIR__ . '/../views/product-detail.php';
+                }
+            } catch (Exception $e) {
+                // En cas d'erreur, afficher 404
+                return __DIR__ . '/../views/404.php';
+            }
+        }
+
         $viewPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $uri . '.php';
         $viewPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $viewPath);
         
