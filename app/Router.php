@@ -70,6 +70,42 @@ class Router {
             }
         }
 
+        // Gestion des routes dynamiques pour les projets
+        if (strpos($uri, 'projets/') === 0) {
+            $slug = substr($uri, 8);
+            $slug = explode('?', $slug)[0]; // Enlever query string
+            
+            // Charger le projet depuis la base de données
+            if (!class_exists('MySQLCore')) {
+                require_once __DIR__ . '/MySQL.php';
+            }
+            
+            try {
+                $project = MySQLCore::fetch(
+                    "SELECT id, titre, slug, description, localisation, image_principale, video_url, date_fin, statut 
+                     FROM projects WHERE slug = ?",
+                    [$slug]
+                );
+                
+                if ($project) {
+                    // Charger aussi les projets similaires
+                    $projects = MySQLCore::fetchAll(
+                        "SELECT id, titre, slug, description, localisation, image_principale, statut 
+                         FROM projects ORDER BY ordre ASC, created_at DESC LIMIT 10"
+                    );
+                    
+                    // Stocker les données dans les variables globales
+                    $_GET['_project'] = $project;
+                    $_GET['_projects'] = $projects;
+                    
+                    return __DIR__ . '/../views/project-detail.php';
+                }
+            } catch (Exception $e) {
+                // En cas d'erreur, afficher 404
+                return __DIR__ . '/../views/404.php';
+            }
+        }
+
         $viewPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $uri . '.php';
         $viewPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $viewPath);
         

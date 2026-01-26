@@ -34,12 +34,18 @@ if (str_starts_with($path, 'admin') && !str_contains($path, 'login') && !str_con
     // Mode Front : On capture la vue et on l'injecte dans $content du layout front
     ob_start();
     
-    // Passer les données des produits si disponibles
+    // Passer les données des produits ou projets si disponibles
     if (isset($_GET['_product'])) {
         $product = $_GET['_product'];
     }
     if (isset($_GET['_products'])) {
         $products = $_GET['_products'];
+    }
+    if (isset($_GET['_project'])) {
+        $project = $_GET['_project'];
+    }
+    if (isset($_GET['_projects'])) {
+        $projects = $_GET['_projects'];
     }
     
     if (file_exists($view)) {

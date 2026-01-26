@@ -32,12 +32,12 @@ if (!isset($projects) || empty($projects)) {
                             <?php if (!empty($project['image_principale'])): ?>
                                 <?php $rel = $project['image_principale']; $isUrl = is_string($rel) && str_starts_with($rel, 'http'); ?>
                                 <?php if ($isUrl): ?>
-                                    <img src="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="200"
-                                       srcset="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
+                                    <img src="/img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="200"
+                                       srcset="/img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
                                        sizes="(max-width: 768px) 100vw, 400px">
                                 <?php else: ?>
-                                    <img src="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="200"
-                                       srcset="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
+                                    <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="200"
+                                       srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
                                        sizes="(max-width: 768px) 100vw, 400px">
                                 <?php endif; ?>
                             <?php else: ?>

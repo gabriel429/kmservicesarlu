@@ -1,7 +1,12 @@
 <!-- Détail Projet -->
 <section class="project-detail-page">
     <div class="container">
-        <?php if (isset($project)): ?>
+        <?php 
+        // Charger le projet depuis les données passées
+        $project = $_GET['_project'] ?? null;
+        $projects = $_GET['_projects'] ?? [];
+        
+        if ($project): ?>
             <h1><?php echo htmlspecialchars($project['titre']); ?></h1>
             
             <div class="project-meta">
@@ -25,12 +30,12 @@
                         <div class="project-main-image">
                             <?php $rel = $project['image_principale']; $isUrl = is_string($rel) && str_starts_with($rel, 'http'); ?>
                             <?php if ($isUrl): ?>
-                                <img src="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=1200&h=400&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" width="1200" height="400"
-                                     srcset="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=600&h=400&q=85&format=webp 600w, <?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=1200&h=400&q=85&format=webp 1200w"
+                                <img src="/img?url=<?php echo urlencode($rel); ?>&w=1200&h=400&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" width="1200" height="400"
+                                     srcset="/img?url=<?php echo urlencode($rel); ?>&w=600&h=400&q=85&format=webp 600w, /img?url=<?php echo urlencode($rel); ?>&w=1200&h=400&q=85&format=webp 1200w"
                                      sizes="(max-width: 768px) 100vw, 1200px">
                             <?php else: ?>
-                                <img src="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=1200&h=400&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" width="1200" height="400"
-                                     srcset="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=600&h=400&q=85&format=webp 600w, <?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=1200&h=400&q=85&format=webp 1200w"
+                                <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=1200&h=400&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" width="1200" height="400"
+                                     srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=600&h=400&q=85&format=webp 600w, /img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=1200&h=400&q=85&format=webp 1200w"
                                      sizes="(max-width: 768px) 100vw, 1200px">
                             <?php endif; ?>
                         </div>
@@ -124,12 +129,12 @@
                         <div class="gallery-item">
                                <?php $rel = $image['image_path']; $isUrl = is_string($rel) && str_starts_with($rel, 'http'); ?>
                                <?php if ($isUrl): ?>
-                                  <img src="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($image['alt_text'] ?? ''); ?>" loading="lazy" width="400" height="200"
-                                      srcset="<?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
+                                  <img src="/img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($image['alt_text'] ?? ''); ?>" loading="lazy" width="400" height="200"
+                                      srcset="/img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
                                       sizes="(max-width: 768px) 100vw, 400px">
                                <?php else: ?>
-                                  <img src="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($image['alt_text'] ?? ''); ?>" loading="lazy" width="400" height="200"
-                                      srcset="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
+                                  <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($image['alt_text'] ?? ''); ?>" loading="lazy" width="400" height="200"
+                                      srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
                                       sizes="(max-width: 768px) 100vw, 400px">
                                <?php endif; ?>
                         </div>
@@ -150,8 +155,8 @@
                             <div class="project-card">
                                 <div class="project-image">
                                     <?php if (!empty($p['image_principale'])): ?>
-                                        <img src="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['titre']); ?>" loading="lazy" width="400" height="200"
-                                             srcset="<?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=200&h=200&q=85&format=webp 200w, <?php echo APP_URL; ?>img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=400&h=200&q=85&format=webp 400w"
+                                        <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['titre']); ?>" loading="lazy" width="400" height="200"
+                                             srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/projects/<?php echo htmlspecialchars($p['image_principale']); ?>&w=400&h=200&q=85&format=webp 400w"
                                              sizes="(max-width: 768px) 100vw, 400px">
                                     <?php else: ?>
                                         <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible">
