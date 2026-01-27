@@ -269,7 +269,7 @@ function ensureQuoteRequestsTableExists() {
                         INDEX idx_created_at (created_at),
                         INDEX idx_treated_by (treated_by),
                         FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL
-                    )\"
+                    )"
                 );
                 return true;
             }
