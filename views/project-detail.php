@@ -97,7 +97,7 @@
                     </div>
                     
                     <div class="cta-box">
-                        <a href="<?php echo APP_URL; ?>contact" class="btn btn-primary btn-block">
+                        <a href="<?php echo APP_URL; ?>devis" class="btn btn-primary btn-block">
                             <i class="fas fa-envelope"></i> Demander un Devis
                         </a>
                     </div>
