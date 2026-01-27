@@ -11,11 +11,7 @@
                 <div class="service-text">
                     <h2>Construction</h2>
                     <div class="service-image">
-                        <picture>
-                            <source type="image/webp" srcset="/img?file=construction.jpeg&w=360&h=260&q=85&format=webp 360w, /img?file=construction.jpeg&w=720&h=260&q=85&format=webp 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <source type="image/jpeg" srcset="/img?file=construction.jpeg&w=360&h=260&q=85&format=jpeg 360w, /img?file=construction.jpeg&w=720&h=260&q=85&format=jpeg 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <img src="/img?file=construction.jpeg&w=720&h=260&q=85&format=jpeg" alt="Construction" loading="lazy" decoding="async" width="720" height="260">
-                        </picture>
+                        <img src="<?php echo ASSET_URL; ?>assets/images/construction.jpeg" alt="Construction" loading="lazy" decoding="async" width="720" height="260">
                     </div>
                     <p>KM SERVICES prend en charge l'intégralité des projets de construction, de la conception à la réalisation, en passant par la gestion de projet. L'entreprise s'occupe aussi bien des constructions résidentielles que commerciales et industrielles.</p>
                     <ul class="service-features">
@@ -35,11 +31,7 @@
                 <div class="service-text">
                     <h2>Forage</h2>
                     <div class="service-image">
-                        <picture>
-                            <source type="image/webp" srcset="/img?file=forage.jpeg&w=360&h=260&q=85&format=webp 360w, /img?file=forage.jpeg&w=720&h=260&q=85&format=webp 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <source type="image/jpeg" srcset="/img?file=forage.jpeg&w=360&h=260&q=85&format=jpeg 360w, /img?file=forage.jpeg&w=720&h=260&q=85&format=jpeg 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <img src="/img?file=forage.jpeg&w=720&h=260&q=85&format=jpeg" alt="Forage" loading="lazy" decoding="async" width="720" height="260">
-                        </picture>
+                        <img src="<?php echo ASSET_URL; ?>assets/images/forage.jpeg" alt="Forage" loading="lazy" decoding="async" width="720" height="260">
                     </div>
                     <p>Spécialiste du forage, KM SERVICES intervient dans les projets d'approvisionnement en eau, avec des techniques modernes pour garantir un forage précis et sécurisé. L'entreprise offre des solutions sur mesure adaptées aux besoins spécifiques de chaque projet.</p>
                     <ul class="service-features">
@@ -59,11 +51,7 @@
                 <div class="service-text">
                     <h2>Plomberie</h2>
                     <div class="service-image">
-                        <picture>
-                            <source type="image/webp" srcset="/img?file=plomberie.jpeg&w=360&h=260&q=85&format=webp 360w, /img?file=plomberie.jpeg&w=720&h=260&q=85&format=webp 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <source type="image/jpeg" srcset="/img?file=plomberie.jpeg&w=360&h=260&q=85&format=jpeg 360w, /img?file=plomberie.jpeg&w=720&h=260&q=85&format=jpeg 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <img src="/img?file=plomberie.jpeg&w=720&h=260&q=85&format=jpeg" alt="Plomberie" loading="lazy" decoding="async" width="720" height="260">
-                        </picture>
+                        <img src="<?php echo ASSET_URL; ?>assets/images/plomberie.jpeg" alt="Plomberie" loading="lazy" decoding="async" width="720" height="260">
                     </div>
                     <p>Le département de plomberie de KM SERVICES propose des services complets pour l'installation, la réparation et l'entretien des systèmes de plomberie. Que ce soit pour des projets neufs ou de rénovation, l'entreprise garantit un travail conforme aux normes de sécurité et de qualité.</p>
                     <ul class="service-features">
@@ -83,11 +71,7 @@
                 <div class="service-text">
                     <h2>Peinture et Maintenance</h2>
                     <div class="service-image">
-                        <picture>
-                            <source type="image/webp" srcset="/img?file=peinture.jpeg&w=360&h=260&q=85&format=webp 360w, /img?file=peinture.jpeg&w=720&h=260&q=85&format=webp 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <source type="image/jpeg" srcset="/img?file=peinture.jpeg&w=360&h=260&q=85&format=jpeg 360w, /img?file=peinture.jpeg&w=720&h=260&q=85&format=jpeg 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <img src="/img?file=peinture.jpeg&w=720&h=260&q=85&format=jpeg" alt="Peinture" loading="lazy" decoding="async" width="720" height="260">
-                        </picture>
+                        <img src="<?php echo ASSET_URL; ?>assets/images/peinture.jpeg" alt="Peinture" loading="lazy" decoding="async" width="720" height="260">
                     </div>
                     <p>Services complets de peinture intérieure et extérieure avec des finitions de qualité professionnelle.</p>
                     <p>KM SERVICES propose des services de maintenance préventive et corrective pour assurer la pérennité et le bon fonctionnement des infrastructures. L'objectif est d'optimiser les performances tout en minimisant les coûts d'exploitation.</p>
@@ -108,11 +92,7 @@
                 <div class="service-text">
                     <h2>Électrification</h2>
                     <div class="service-image">
-                        <picture>
-                            <source type="image/webp" srcset="/img?file=image_principale.jpeg&w=360&h=260&q=85&format=webp 360w, /img?file=image_principale.jpeg&w=720&h=260&q=85&format=webp 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <source type="image/jpeg" srcset="/img?file=image_principale.jpeg&w=360&h=260&q=85&format=jpeg 360w, /img?file=image_principale.jpeg&w=720&h=260&q=85&format=jpeg 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <img src="/img?file=image_principale.jpeg&w=720&h=260&q=85&format=jpeg" alt="Électrification" loading="lazy" decoding="async" width="720" height="260">
-                        </picture>
+                        <img src="<?php echo ASSET_URL; ?>assets/images/image_principale.jpeg" alt="Électrification" loading="lazy" decoding="async" width="720" height="260">
                     </div>
                     <p>KM SERVICES assure l'installation, la maintenance et la mise à niveau des réseaux électriques pour les bâtiments résidentiels, commerciaux et industriels. L'entreprise est experte en systèmes d'électrification de haute performance et en solutions écoénergétiques.</p>
                     <ul class="service-features">
@@ -132,11 +112,7 @@
                 <div class="service-text">
                     <h2>Matériels de Construction</h2>
                     <div class="service-image">
-                        <picture>
-                            <source type="image/webp" srcset="/img?file=materiels-construction.jpeg&w=360&h=260&q=85&format=webp 360w, /img?file=materiels-construction.jpeg&w=720&h=260&q=85&format=webp 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <source type="image/jpeg" srcset="/img?file=materiels-construction.jpeg&w=360&h=260&q=85&format=jpeg 360w, /img?file=materiels-construction.jpeg&w=720&h=260&q=85&format=jpeg 720w" sizes="(max-width: 768px) 100vw, 720px">
-                            <img src="/img?file=materiels-construction.jpeg&w=720&h=260&q=85&format=jpeg" alt="Matériels de construction" loading="lazy" decoding="async" width="720" height="260">
-                        </picture>
+                        <img src="<?php echo ASSET_URL; ?>assets/images/materiels-construction.jpeg" alt="Matériels de construction" loading="lazy" decoding="async" width="720" height="260">
                     </div>
                     <p>KM SERVICES fournit une large gamme de matériaux de construction de qualité ainsi que des équipements pour les professionnels du secteur. L'entreprise travaille avec des fournisseurs de renom pour garantir la durabilité et la performance des produits proposés.</p>
                     <ul class="service-features">
