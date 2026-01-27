@@ -818,6 +818,7 @@ if (!class_exists('MySQLCore')) {
                 <li><a href="<?php echo APP_URL; ?>admin/produits">Produits</a></li>
                 <li><a href="<?php echo APP_URL; ?>admin/contacts">Messages</a></li>
                 <li><a href="<?php echo APP_URL; ?>admin/forages">Demandes de Forage</a></li>
+                <li><a href="<?php echo APP_URL; ?>admin/devis">Demandes de Devis</a></li>
                 <li><a href="<?php echo APP_URL; ?>admin/commandes">Commandes</a></li>
                 <?php if ($role === 'admin'): ?>
                     <li><a href="<?php echo APP_URL; ?>admin/utilisateurs">Utilisateurs</a></li>
