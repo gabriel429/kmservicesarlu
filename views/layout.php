@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
+<?php 
+// Ensure MySQLCore is available
+if (!class_exists('MySQLCore')) {
+    require_once __DIR__ . '/../app/MySQL.php';
+}
+?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

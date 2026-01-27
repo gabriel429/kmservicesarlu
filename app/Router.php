@@ -1,4 +1,10 @@
 <?php namespace App;
+
+// Alias pour les classes sans namespace
+if (!class_exists('MySQLCore')) {
+    require_once __DIR__ . '/MySQL.php';
+}
+
 class Router {
     private $routes = [];
     public function add($path, $view) {
@@ -45,7 +51,7 @@ class Router {
             }
             
             try {
-                $product = MySQLCore::fetch(
+                $product = \MySQLCore::fetch(
                     "SELECT id, nom, slug, description, prix, prix_promotion, stock, reference, image_principale, category_id 
                      FROM products WHERE slug = ? AND actif = 1",
                     [$slug]
@@ -53,7 +59,7 @@ class Router {
                 
                 if ($product) {
                     // Charger aussi les produits similaires
-                    $products = MySQLCore::fetchAll(
+                    $products = \MySQLCore::fetchAll(
                         "SELECT id, nom, slug, description, prix, stock, image_principale 
                          FROM products WHERE actif = 1 ORDER BY ordre ASC, created_at DESC LIMIT 10"
                     );
@@ -81,7 +87,7 @@ class Router {
             }
             
             try {
-                $project = MySQLCore::fetch(
+                $project = \MySQLCore::fetch(
                     "SELECT id, titre, slug, description, localisation, image_principale, video_url, date_fin, statut 
                      FROM projects WHERE slug = ?",
                     [$slug]
@@ -89,7 +95,7 @@ class Router {
                 
                 if ($project) {
                     // Charger aussi les projets similaires
-                    $projects = MySQLCore::fetchAll(
+                    $projects = \MySQLCore::fetchAll(
                         "SELECT id, titre, slug, description, localisation, image_principale, statut 
                          FROM projects ORDER BY ordre ASC, created_at DESC LIMIT 10"
                     );
