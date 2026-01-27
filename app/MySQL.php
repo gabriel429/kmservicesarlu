@@ -42,3 +42,9 @@ class MySQLCore {
         return self::connect()->lastInsertId();
     }
 }
+
+// Auto-initialiser les tables manquantes
+@require_once __DIR__ . '/Bootstrap.php';
+if (function_exists('MySQLCore') || class_exists('MySQLCore')) {
+    require_once __DIR__ . '/Bootstrap.php';
+}
