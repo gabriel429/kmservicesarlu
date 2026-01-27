@@ -151,6 +151,14 @@
                     formData.append('image', imageFile);
                 }
                 
+                // Ajouter les images supplémentaires
+                const supImageInput = document.getElementById('productImages');
+                if (supImageInput && supImageInput.files) {
+                    for (let i = 0; i < supImageInput.files.length; i++) {
+                        formData.append('images[]', supImageInput.files[i]);
+                    }
+                }
+                
                 fetch(ASSET_URL + 'handlers/crud_products.php', {method: 'POST', body: formData})
                     .then(function(r) { return r.text(); })
                     .then(function(text) {

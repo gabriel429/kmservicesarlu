@@ -26,6 +26,21 @@ function ensureProductAuditTable() {
     } catch (Throwable $e) {}
 }
 
+function ensureProductImagesTable() {
+    try {
+        MySQLCore::execute(
+            "CREATE TABLE IF NOT EXISTS product_images (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                product_id INT NOT NULL,
+                image_path VARCHAR(255) NOT NULL,
+                alt_text VARCHAR(255) NULL,
+                ordre INT DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+    } catch (Throwable $e) {}
+}
+
 function logProductAction($action, $productId = null, $details = null) {
     ensureProductAuditTable();
     $adminId = $_SESSION['admin_user_id'] ?? null;
@@ -38,11 +53,57 @@ function logProductAction($action, $productId = null, $details = null) {
 }
 try {
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
+    ensureProductImagesTable();
     
     // Dossier uploads (fallback local en dev)
     $uploadsDir = dirname(dirname(__FILE__)) . '/uploads/products/';
     if (!is_dir($uploadsDir)) {
         @mkdir($uploadsDir, 0755, true);
+    }
+    
+    function handleProductImageUploads($productId, $keepExisting = false) {
+        global $uploadsDir;
+        
+        // Supprimer les anciennes images si on fait une mise à jour (sauf si keepExisting)
+        if ($keepExisting === false) {
+            $existingImages = MySQLCore::fetchAll("SELECT id, image_path FROM product_images WHERE product_id = ?", [$productId]);
+            foreach ($existingImages as $img) {
+                // Supprimer local si existant
+                if (!str_starts_with((string)$img['image_path'], 'http') && file_exists($uploadsDir . $img['image_path'])) {
+                    @unlink($uploadsDir . $img['image_path']);
+                }
+                MySQLCore::execute("DELETE FROM product_images WHERE id = ?", [$img['id']]);
+            }
+        }
+        
+        if (!isset($_FILES['images']) || empty($_FILES['images']['name'][0])) {
+            return; // Aucune image
+        }
+        
+        $files = $_FILES['images'];
+        $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $uploaded = 0;
+        
+        for ($i = 0; $i < count($files['name']); $i++) {
+            if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) continue;
+            if ($files['error'][$i] !== UPLOAD_ERR_OK) continue;
+            if ($uploaded >= 5) break; // Max 5 images
+            
+            if (!in_array($files['type'][$i], $allowed)) continue;
+            if ($files['size'][$i] > 5 * 1024 * 1024) continue; // 5MB max
+            
+            $ext = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
+            $ext = $ext === 'jpeg' ? 'jpg' : $ext;
+            $filename = 'product_' . $productId . '_' . time() . '_' . $uploaded . '.' . $ext;
+
+            if (move_uploaded_file($files['tmp_name'][$i], $uploadsDir . $filename)) {
+                MySQLCore::execute(
+                    "INSERT INTO product_images (product_id, image_path, ordre) VALUES (?, ?, ?)",
+                    [$productId, $filename, $uploaded]
+                );
+                $uploaded++;
+            }
+        }
     }
     
     function handleImageUpload($productId, $existingImage = null) {
@@ -114,7 +175,7 @@ try {
             
             $productId = MySQLCore::lastInsertId();
             
-            // Gérer l'image si présente
+            // Gérer l'image principale si présente
             $image = null;
             if (isset($_FILES['image'])) {
                 $image = handleImageUpload($productId);
@@ -122,6 +183,11 @@ try {
                     "UPDATE products SET image_principale = ? WHERE id = ?",
                     [$image, $productId]
                 );
+            }
+            
+            // Gérer les images supplémentaires
+            if (isset($_FILES['images'])) {
+                handleProductImageUploads($productId, false);
             }
             
             $response = [
@@ -150,9 +216,14 @@ try {
             $current = MySQLCore::fetch("SELECT image_principale FROM products WHERE id = ?", [$id]);
             $currentImage = $current['image_principale'] ?? null;
             
-            // Gérer l'image si présente
+            // Gérer l'image principale si présente
             if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
                 $currentImage = handleImageUpload($id, $currentImage);
+            }
+            
+            // Gérer les images supplémentaires
+            if (isset($_FILES['images'])) {
+                handleProductImageUploads($id, false);
             }
             
             MySQLCore::execute(

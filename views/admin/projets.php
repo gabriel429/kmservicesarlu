@@ -116,6 +116,14 @@
                 fd.append('client', document.getElementById('projectClient').value);
                 fd.append('statut', document.getElementById('projectStatut').value);
                 
+                // Ajouter les fichiers images
+                const imageInput = document.getElementById('projectImages');
+                if (imageInput && imageInput.files) {
+                    for (let i = 0; i < imageInput.files.length; i++) {
+                        fd.append('images[]', imageInput.files[i]);
+                    }
+                }
+                
                 fetch(ASSET_URL + 'handlers/crud_projects.php', {method: 'POST', body: fd})
                     .then(r => r.json())
                     .then(data => {
