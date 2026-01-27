@@ -38,9 +38,9 @@ if (!class_exists('MySQLCore')) {
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     treated_by INT DEFAULT NULL,
+                    FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL,
                     INDEX idx_statut (statut),
-                    INDEX idx_created_at (created_at),
-                    FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL
+                    INDEX idx_created_at (created_at)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
             );
         } catch (Throwable $te) {
