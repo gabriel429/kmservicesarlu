@@ -41,10 +41,11 @@ ensureQuoteRequestsTableExists();
                     notes TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    treated_by INT,
-                    FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL,
+                    treated_by INT NULL,
                     INDEX idx_statut (statut),
-                    INDEX idx_created_at (created_at)
+                    INDEX idx_created_at (created_at),
+                    INDEX idx_treated_by (treated_by),
+                    FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL
                 )"
             );
         } catch (Throwable $te) {
