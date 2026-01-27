@@ -102,10 +102,7 @@ if (!isset($products) || empty($products) || !isset($categories)) {
                                     </div>
                                     <div class="product-actions">
                                         <a href="<?php echo APP_URL; ?>produit/<?php echo htmlspecialchars($product['slug']); ?>" class="btn btn-secondary">Détails</a>
-                                        <form method="POST" action="<?php echo APP_URL; ?>panier/ajouter" style="display:inline;">
-                                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                                            <button type="submit" class="btn btn-primary">Ajouter</button>
-                                        </form>
+                                        <button type="button" class="btn btn-primary" onclick="commanderProduit(<?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['nom']); ?>', <?php echo $product['prix']; ?>)">Commander</button>
                                     </div>
                                 </div>
                             </div>
@@ -118,3 +115,131 @@ if (!isset($products) || empty($products) || !isset($categories)) {
         </div>
     </div>
 </section>
+<!-- Modal de commande -->
+<div id="commandeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:white; padding:2rem; border-radius:8px; max-width:600px; width:90%; max-height:90vh; overflow-y:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h2 id="commandeTitle">Commander</h2>
+            <button onclick="closeCommandeModal()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+        </div>
+
+        <form id="commandeForm">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                <div>
+                    <label>Nom *</label>
+                    <input type="text" id="commandeNom" name="nom_client" required style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                </div>
+                <div>
+                    <label>Email *</label>
+                    <input type="email" id="commandeEmail" name="email_client" required style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                <div>
+                    <label>Téléphone *</label>
+                    <input type="tel" id="commandeTelephone" name="telephone_client" required style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                </div>
+                <div>
+                    <label>Quantité *</label>
+                    <input type="number" id="commandeQuantite" name="quantite" value="1" min="1" required style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                </div>
+            </div>
+
+            <div style="margin-bottom:1rem;">
+                <label>Adresse de livraison</label>
+                <textarea id="commandeAdresse" name="adresse_livraison" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px; resize:vertical;" rows="3"></textarea>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                <div>
+                    <label>Ville</label>
+                    <input type="text" id="commandeVille" name="ville" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                </div>
+                <div>
+                    <label>Code postal</label>
+                    <input type="text" id="commandeCodePostal" name="code_postal" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:4px;">
+                </div>
+            </div>
+
+            <div id="commandeInfo" style="background:#f0f8ff; padding:1rem; border-radius:4px; margin-bottom:1rem;">
+                <p><strong id="infoProduit">Produit sélectionné</strong></p>
+                <p>Prix unitaire: <strong id="infoPrix">$0.00</strong></p>
+                <p>Montant total: <strong id="infoTotal">$0.00</strong></p>
+                <input type="hidden" id="commandeProductId" name="product_id">
+            </div>
+
+            <div style="display:flex; gap:1rem;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">Confirmer la commande</button>
+                <button type="button" onclick="closeCommandeModal()" class="btn btn-secondary" style="flex:1;">Annuler</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function commanderProduit(productId, productNom, productPrix) {
+    document.getElementById('commandeProductId').value = productId;
+    document.getElementById('infoProduit').textContent = productNom;
+    document.getElementById('infoPrix').textContent = '$' + parseFloat(productPrix).toFixed(2);
+    
+    // Calculer le montant total
+    const quantite = parseInt(document.getElementById('commandeQuantite').value) || 1;
+    const total = parseFloat(productPrix) * quantite;
+    document.getElementById('infoTotal').textContent = '$' + total.toFixed(2);
+    
+    // Afficher le modal
+    document.getElementById('commandeModal').style.display = 'flex';
+    document.getElementById('commandeForm').reset();
+}
+
+function closeCommandeModal() {
+    document.getElementById('commandeModal').style.display = 'none';
+    document.getElementById('commandeForm').reset();
+}
+
+// Mettre à jour le montant total quand la quantité change
+document.getElementById('commandeQuantite').addEventListener('change', function() {
+    const prixText = document.getElementById('infoPrix').textContent;
+    const prix = parseFloat(prixText.replace('$', ''));
+    const quantite = parseInt(this.value) || 1;
+    const total = prix * quantite;
+    document.getElementById('infoTotal').textContent = '$' + total.toFixed(2);
+});
+
+// Traiter la soumission du formulaire de commande
+document.getElementById('commandeForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    formData.append('action', 'create');
+    
+    try {
+        const response = await fetch('<?php echo ASSET_URL; ?>handlers/crud_orders.php', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Commande créée avec succès! N° de commande: ' + data.numero_commande);
+            closeCommandeModal();
+            // Optionnel: rediriger vers une page de confirmation
+            // window.location.href = '<?php echo APP_URL; ?>commande/' + data.order_id;
+        } else {
+            alert('Erreur: ' + data.message);
+        }
+    } catch (error) {
+        alert('Erreur lors de la création de la commande');
+        console.error(error);
+    }
+});
+
+// Fermer le modal quand on clique en dehors
+document.getElementById('commandeModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeCommandeModal();
+    }
+});
+</script>
