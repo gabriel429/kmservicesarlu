@@ -214,4 +214,71 @@ function getStatusLabel($status) {
     return $labels[$status] ?? ucfirst($status);
 }
 
+/**
+ * Garantir la création de la table quote_requests
+ */
+function ensureQuoteRequestsTableExists() {
+    static $checked = false;
+    if ($checked) return;
+    $checked = true;
+
+    try {
+        if (!defined('DB_HOST')) return;
+        
+        // Vérifier directement si la table existe
+        $pdo = new PDO(
+            'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+            DB_USER,
+            DB_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+
+        // Vérifier l'existence de la table
+        $stmt = $pdo->prepare("SELECT 1 FROM quote_requests LIMIT 1");
+        try {
+            $stmt->execute();
+            // Table existe
+            return true;
+        } catch (PDOException $e) {
+            // Table n'existe pas, la créer
+            if (strpos($e->getMessage(), 'doesn\'t exist') !== false || 
+                strpos($e->getMessage(), 'Base table or view not found') !== false) {
+                
+                // Créer la table
+                $pdo->exec(
+                    "CREATE TABLE IF NOT EXISTS quote_requests (
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        numero_devis VARCHAR(50) UNIQUE NOT NULL,
+                        nom VARCHAR(150) NOT NULL,
+                        email VARCHAR(150) NOT NULL,
+                        telephone VARCHAR(20) NOT NULL,
+                        localisation VARCHAR(255),
+                        service VARCHAR(100),
+                        type_service VARCHAR(100),
+                        description LONGTEXT,
+                        delai_souhaite VARCHAR(100),
+                        budget_estime DECIMAL(12, 2),
+                        document_joint VARCHAR(255),
+                        statut ENUM('nouveau', 'en_attente', 'contacte', 'accepte', 'refuse') DEFAULT 'nouveau',
+                        lu TINYINT DEFAULT 0,
+                        notes TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        treated_by INT DEFAULT NULL,
+                        FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL,
+                        INDEX idx_statut (statut),
+                        INDEX idx_created_at (created_at)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+                );
+                return true;
+            }
+            throw $e;
+        }
+    } catch (Throwable $e) {
+        // Silencieux - on essaiera à la prochaine requête
+        error_log("Quote requests table check failed: " . $e->getMessage());
+        return false;
+    }
+}
+
 ?>

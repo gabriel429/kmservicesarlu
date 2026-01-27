@@ -29,6 +29,10 @@
                         require_once dirname(__DIR__, 2) . '/app/MySQL.php';
                     }
                     
+                    // Garantir que la table existe
+                    require_once dirname(__DIR__, 2) . '/app/helpers.php';
+                    ensureQuoteRequestsTableExists();
+                    
                     // Créer la table si elle n'existe pas
                     try {
                         MySQLCore::execute(

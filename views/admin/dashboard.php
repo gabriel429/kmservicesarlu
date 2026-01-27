@@ -5,6 +5,10 @@
 if (!class_exists('MySQLCore')) {
     require_once dirname(__DIR__, 2) . '/app/MySQL.php';
 }
+
+// Garantir que la table quote_requests existe
+require_once dirname(__DIR__, 2) . '/app/helpers.php';
+ensureQuoteRequestsTableExists();
 ?>
 
 <div class="stats-container">

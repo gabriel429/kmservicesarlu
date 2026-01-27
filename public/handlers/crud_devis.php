@@ -5,12 +5,16 @@
 session_start();
 require_once dirname(__DIR__, 2) . '/config/config.php';
 require_once dirname(__DIR__, 2) . '/app/MySQL.php';
+require_once dirname(__DIR__, 2) . '/app/helpers.php';
 
 header('Content-Type: application/json');
 
 $action = $_REQUEST['action'] ?? 'list';
 
 try {
+    // Garantir que la table quote_requests existe
+    ensureQuoteRequestsTableExists();
+    
     // Assurer que la table quote_requests existe
     try {
         MySQLCore::execute(

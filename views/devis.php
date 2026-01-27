@@ -4,6 +4,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         require_once dirname(__DIR__) . '/config/config.php';
         require_once dirname(__DIR__) . '/app/MySQL.php';
+        require_once dirname(__DIR__) . '/app/helpers.php';
+        
+        // Garantir que la table existe
+        ensureQuoteRequestsTableExists();
         
         // Assurer que la table existe
         try {
