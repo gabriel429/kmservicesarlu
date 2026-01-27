@@ -10,9 +10,27 @@ if (!isset($products) || empty($products) || !isset($categories)) {
                 "SELECT id, nom, slug FROM product_categories WHERE actif = 1 ORDER BY nom ASC"
             );
         }
+        
         if (!isset($products) || empty($products)) {
+            // Vérifier si un filtre de catégorie est appliqué
+            $categoryFilter = '';
+            $params = [];
+            
+            if (isset($_GET['cat']) && !empty($_GET['cat'])) {
+                $catSlug = $_GET['cat'];
+                $categoryData = MySQLCore::fetch(
+                    "SELECT id FROM product_categories WHERE slug = ? AND actif = 1",
+                    [$catSlug]
+                );
+                if ($categoryData) {
+                    $categoryFilter = ' AND category_id = ?';
+                    $params[] = $categoryData['id'];
+                }
+            }
+            
             $products = MySQLCore::fetchAll(
-                "SELECT id, nom, slug, description, prix, stock, image_principale FROM products WHERE actif = 1 ORDER BY ordre ASC, created_at DESC LIMIT 50"
+                "SELECT id, nom, slug, description, prix, stock, image_principale FROM products WHERE actif = 1" . $categoryFilter . " ORDER BY ordre ASC, created_at DESC LIMIT 50",
+                $params
             );
         }
     } catch (Exception $e) {
