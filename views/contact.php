@@ -1,46 +1,71 @@
 <?php
 // Traitement des formulaires de contact
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once dirname(__DIR__) . '/config/config.php';
-    require_once dirname(__DIR__) . '/app/MySQL.php';
-    
-    $nom = trim($_POST['nom'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $telephone = trim($_POST['telephone'] ?? '');
-    $sujet = trim($_POST['sujet'] ?? '');
-    $message = trim($_POST['message'] ?? '');
-    $service = $_GET['service'] ?? 'general';
-    
-    if ($nom && $email && $sujet && $message) {
+    try {
+        require_once dirname(__DIR__) . '/config/config.php';
+        require_once dirname(__DIR__) . '/app/MySQL.php';
+        
+        // Assurer que la table existe
         try {
-            // Enregistrer le message en base de données
             MySQLCore::execute(
-                "INSERT INTO contacts (nom, email, telephone, sujet, message, service, statut) 
-                 VALUES (?, ?, ?, ?, ?, ?, 'nouveau')",
-                [$nom, $email, $telephone, $sujet, $message, $service]
+                "CREATE TABLE IF NOT EXISTS contacts (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    nom VARCHAR(150) NOT NULL,
+                    email VARCHAR(150) NOT NULL,
+                    telephone VARCHAR(20),
+                    sujet VARCHAR(200),
+                    message LONGTEXT NOT NULL,
+                    statut ENUM('nouveau', 'traite', 'archive') DEFAULT 'nouveau',
+                    lu TINYINT DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_statut (statut),
+                    INDEX idx_created_at (created_at)
+                )"
+            );
+        } catch (Throwable $te) {
+            // La table existe déjà ou erreur - continuer
+        }
+        
+        $nom = trim($_POST['nom'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $telephone = trim($_POST['telephone'] ?? '');
+        $sujet = trim($_POST['sujet'] ?? '');
+        $message = trim($_POST['message'] ?? '');
+        
+        if ($nom && $email && $sujet && $message) {
+            // Enregistrer le message en base de données
+            $result = MySQLCore::execute(
+                "INSERT INTO contacts (nom, email, telephone, sujet, message, statut) 
+                 VALUES (?, ?, ?, ?, ?, 'nouveau')",
+                [$nom, $email, $telephone, $sujet, $message]
             );
             
-            // Envoyer un email de confirmation au client
-            $subject = 'Confirmation de réception de votre message - KM Services';
-            $body = "Bonjour $nom,\n\n";
-            $body .= "Nous avons bien reçu votre message du " . date('d/m/Y à H:i') . ".\n\n";
-            $body .= "Nous traiterons votre demande et vous répondrons dans les meilleurs délais.\n\n";
-            $body .= "Cordialement,\n";
-            $body .= "L'équipe KM Services\n";
-            $body .= "contact@kmservices.cd\n";
-            
-            $headers = "From: contact@kmservices.cd\r\n";
-            $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-            $headers .= "Reply-To: contact@kmservices.cd\r\n";
-            
-            @mail($email, $subject, $body, $headers);
-            
-            // Rediriger avec message de succès
-            header('Location: ' . APP_URL . 'contact?success=1');
-            exit;
-        } catch (Exception $e) {
-            error_log('Error saving contact message: ' . $e->getMessage());
+            if ($result) {
+                // Envoyer un email de confirmation au client
+                $subject = 'Confirmation de réception de votre message - KM Services';
+                $body = "Bonjour $nom,\n\n";
+                $body .= "Nous avons bien reçu votre message du " . date('d/m/Y à H:i') . ".\n\n";
+                $body .= "Nous traiterons votre demande et vous répondrons dans les meilleurs délais.\n\n";
+                $body .= "Cordialement,\n";
+                $body .= "L'équipe KM Services\n";
+                $body .= "contact@kmservices.cd\n";
+                
+                $headers = "From: contact@kmservices.cd\r\n";
+                $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+                $headers .= "Reply-To: contact@kmservices.cd\r\n";
+                
+                @mail($email, $subject, $body, $headers);
+                
+                // Rediriger avec message de succès
+                header('Location: ' . APP_URL . 'contact?success=1');
+                exit;
+            } else {
+                error_log('Failed to insert contact message');
+            }
         }
+    } catch (Throwable $e) {
+        error_log('Error in contact form: ' . $e->getMessage());
     }
 }
 ?>
