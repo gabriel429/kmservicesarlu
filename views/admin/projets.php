@@ -142,7 +142,7 @@
             <button onclick="closeProjectModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
         </div>
         
-        <form id="projectForm">
+        <form id="projectForm" enctype="multipart/form-data">
             <input type="hidden" id="projectId">
             
             <div style="margin-bottom: 1rem;">
@@ -163,6 +163,12 @@
                     <option value="completed">Complété</option>
                     <option value="archived">Archivé</option>
                 </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="projectImages" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Images du Projet (Jusqu'à 5)</label>
+                <input type="file" id="projectImages" name="images" multiple accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+                <small style="color: #666;">JPG, PNG, GIF (max 5 images, 5MB chacune)</small>
             </div>
             
             <div style="display: flex; gap: 1rem; justify-content: flex-end;">

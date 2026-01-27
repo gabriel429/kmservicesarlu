@@ -236,6 +236,12 @@
                 <input type="file" id="productImage" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
                 <small style="color: #666;">JPG, PNG, GIF (max 5MB)</small>
             </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="productImages" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Images supplémentaires (Jusqu'à 5)</label>
+                <input type="file" id="productImages" name="images" multiple accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+                <small style="color: #666;">JPG, PNG, GIF (max 5 images, 5MB chacune)</small>
+            </div>
             
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: flex; align-items: center; cursor: pointer;">
