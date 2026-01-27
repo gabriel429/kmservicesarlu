@@ -88,7 +88,7 @@ class Router {
             
             try {
                 $project = \MySQLCore::fetch(
-                    "SELECT id, titre, slug, description, localisation, image_principale, video_url, date_fin, statut 
+                    "SELECT id, titre, slug, description, localisation, image_principale, video_url, date_debut, date_fin, client, budget, statut 
                      FROM projects WHERE slug = ?",
                     [$slug]
                 );
