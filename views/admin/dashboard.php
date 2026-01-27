@@ -46,8 +46,12 @@ if (!class_exists('MySQLCore')) {
         } catch (Throwable $te) {
             // Table exists
         }
-        
-        $quoteCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM quote_requests WHERE statut = 'nouveau'");
+        $quoteCount = ['count' => 0];
+        try {
+            $quoteCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM quote_requests WHERE statut = 'nouveau'");
+        } catch (Throwable $qe) {
+            // Table may not exist yet, use default
+        }
     } catch (Exception $e) {
         $projectCount = ['count' => 0];
         $productCount = ['count' => 0];
