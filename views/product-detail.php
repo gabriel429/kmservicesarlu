@@ -19,12 +19,12 @@
                         <div class="main-image">
                             <?php $imgSrc = $product['image_principale']; $isUrl = is_string($imgSrc) && str_starts_with($imgSrc, 'http'); ?>
                             <?php if ($isUrl): ?>
-                                <img src="/img?url=<?php echo urlencode($imgSrc); ?>&w=720&h=360&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" height="360"
-                                     srcset="/img?url=<?php echo urlencode($imgSrc); ?>&w=360&h=360&q=85&format=webp 360w, /img?url=<?php echo urlencode($imgSrc); ?>&w=720&h=360&q=85&format=webp 720w"
+                                <img src="/img?url=<?php echo urlencode($imgSrc); ?>&w=720&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" style="height: auto; max-height: 500px; object-fit: contain;"
+                                     srcset="/img?url=<?php echo urlencode($imgSrc); ?>&w=360&q=85&format=webp 360w, /img?url=<?php echo urlencode($imgSrc); ?>&w=720&q=85&format=webp 720w"
                                      sizes="(max-width: 768px) 100vw, 720px">
                             <?php else: ?>
-                                <img src="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&h=360&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" height="360"
-                                     srcset="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=360&h=360&q=85&format=webp 360w, /img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&h=360&q=85&format=webp 720w"
+                                <img src="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" style="height: auto; max-height: 500px; object-fit: contain;"
+                                     srcset="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=360&q=85&format=webp 360w, /img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&q=85&format=webp 720w"
                                      sizes="(max-width: 768px) 100vw, 720px">
                             <?php endif; ?>
                         </div>

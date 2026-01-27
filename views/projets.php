@@ -36,8 +36,8 @@ if (!isset($projects) || empty($projects)) {
                                        srcset="/img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
                                        sizes="(max-width: 768px) 100vw, 400px">
                                 <?php else: ?>
-                                    <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="200"
-                                       srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
+                                <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" style="height: auto; aspect-ratio: 2; object-fit: contain;"
+                                   srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&q=85&format=webp 200w, /img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&q=85&format=webp 400w"
                                        sizes="(max-width: 768px) 100vw, 400px">
                                 <?php endif; ?>
                             <?php else: ?>
