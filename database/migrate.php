@@ -43,11 +43,11 @@ try {
                 notes TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                treated_by INT DEFAULT NULL,
+                treated_by INT,
                 FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL,
                 INDEX idx_statut (statut),
                 INDEX idx_created_at (created_at)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+            )"
         );
         $results['quote_requests'] = 'Créée ou existe déjà ✓';
     } catch (Throwable $e) {
