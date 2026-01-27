@@ -10,6 +10,9 @@ $response = ['success' => false, 'message' => 'Erreur'];
 
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../app/MySQL.php';
+require_once __DIR__ . '/../../app/Supabase.php';
+
+use App\Supabase;
 
 function ensureProductAuditTable() {
     try {
@@ -96,12 +99,25 @@ try {
             $ext = $ext === 'jpeg' ? 'jpg' : $ext;
             $filename = 'product_' . $productId . '_' . time() . '_' . $uploaded . '.' . $ext;
 
-            if (move_uploaded_file($files['tmp_name'][$i], $uploadsDir . $filename)) {
+            try {
+                // Lire le contenu du fichier
+                $fileContent = file_get_contents($files['tmp_name'][$i]);
+                
+                // Uploader sur Supabase
+                $result = Supabase::uploadFile('products', $filename, $fileContent, $files['type'][$i]);
+                
+                // Obtenir l'URL publique
+                $publicUrl = Supabase::getPublicUrl('products', $filename);
+                
+                // Enregistrer dans la base de données
                 MySQLCore::execute(
                     "INSERT INTO product_images (product_id, image_path, ordre) VALUES (?, ?, ?)",
-                    [$productId, $filename, $uploaded]
+                    [$productId, $publicUrl, $uploaded]
                 );
                 $uploaded++;
+            } catch (Throwable $e) {
+                // Continuer avec l'image suivante en cas d'erreur
+                error_log('Error uploading product image: ' . $e->getMessage());
             }
         }
     }
