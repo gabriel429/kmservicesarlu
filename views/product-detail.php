@@ -86,9 +86,13 @@
                         <p><strong>SKU:</strong> <?php echo htmlspecialchars($product['reference'] ?? 'N/A'); ?></p>
                         <p><strong>Catégorie:</strong> 
                             <?php 
-                            $category = isset($product['category_id']) ? 
-                                $db->fetch("SELECT nom FROM product_categories WHERE id = ?", [$product['category_id']]) 
-                                : null;
+                            $category = null;
+                            if (isset($product['category_id']) && !empty($product['category_id'])) {
+                                if (!class_exists('MySQLCore')) {
+                                    require_once dirname(__DIR__) . '/app/MySQL.php';
+                                }
+                                $category = MySQLCore::fetch("SELECT nom FROM product_categories WHERE id = ?", [$product['category_id']]);
+                            }
                             echo $category ? htmlspecialchars($category['nom']) : 'Non spécifiée';
                             ?>
                         </p>
