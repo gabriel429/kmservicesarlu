@@ -15,12 +15,46 @@ if (!class_exists('MySQLCore')) {
         $contactCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM contacts WHERE statut = 'nouveau'");
         $forageCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM drilling_requests WHERE statut = 'nouveau'");
         $orderCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM orders WHERE statut = 'nouvelle'");
+        
+        // Créer la table si elle n'existe pas
+        try {
+            MySQLCore::execute(
+                "CREATE TABLE IF NOT EXISTS quote_requests (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    numero_devis VARCHAR(50) UNIQUE NOT NULL,
+                    nom VARCHAR(150) NOT NULL,
+                    email VARCHAR(150) NOT NULL,
+                    telephone VARCHAR(20) NOT NULL,
+                    localisation VARCHAR(255),
+                    service VARCHAR(100),
+                    type_service VARCHAR(100),
+                    description LONGTEXT,
+                    delai_souhaite VARCHAR(100),
+                    budget_estime DECIMAL(12, 2),
+                    document_joint VARCHAR(255),
+                    statut ENUM('nouveau', 'en_attente', 'contacte', 'accepte', 'refuse') DEFAULT 'nouveau',
+                    lu TINYINT DEFAULT 0,
+                    notes TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    treated_by INT,
+                    FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL,
+                    INDEX idx_statut (statut),
+                    INDEX idx_created_at (created_at)
+                )"
+            );
+        } catch (Throwable $te) {
+            // Table exists
+        }
+        
+        $quoteCount = MySQLCore::fetch("SELECT COUNT(*) as count FROM quote_requests WHERE statut = 'nouveau'");
     } catch (Exception $e) {
         $projectCount = ['count' => 0];
         $productCount = ['count' => 0];
         $contactCount = ['count' => 0];
         $forageCount = ['count' => 0];
         $orderCount = ['count' => 0];
+        $quoteCount = ['count' => 0];
     }
     $role = $_SESSION['admin_role'] ?? 'editor';
     ?>
@@ -50,6 +84,11 @@ if (!class_exists('MySQLCore')) {
         <h3><?php echo $forageCount['count'] ?? 0; ?></h3>
         <p>Demandes de Forage</p>
     </div>
+
+    <div class="stat-card">
+        <h3><?php echo $quoteCount['count'] ?? 0; ?></h3>
+        <p>Demandes de Devis</p>
+    </div>
 </div>
 
 <div class="card">
@@ -62,6 +101,7 @@ if (!class_exists('MySQLCore')) {
         <li><a href="<?php echo APP_URL; ?>admin/produits">Gérer les Produits</a></li>
         <li><a href="<?php echo APP_URL; ?>admin/contacts">Consulter les Messages</a></li>
         <li><a href="<?php echo APP_URL; ?>admin/commandes">Voir les Commandes</a></li>
+        <li><a href="<?php echo APP_URL; ?>admin/devis">Consulter les Demandes de Devis</a></li>
     </ul>
 </div>
 
