@@ -27,10 +27,27 @@ if (!isset($projects) || empty($projects)) {
         <div class="projects-grid">
             <?php if (!empty($projects)): ?>
                 <?php foreach ($projects as $project): ?>
+                    <?php
+                        // Récupérer l'image principale depuis project_images si disponible (priorité)
+                        $projectImage = null;
+                        try {
+                            if (!class_exists('MySQLCore')) {
+                                require_once dirname(__DIR__) . '/app/MySQL.php';
+                            }
+                            $first = MySQLCore::fetch("SELECT image_path FROM project_images WHERE project_id = ? ORDER BY ordre ASC, id ASC LIMIT 1", [$project['id']]);
+                            if ($first && !empty($first['image_path'])) {
+                                $projectImage = $first['image_path'];
+                            } else {
+                                $projectImage = $project['image_principale'] ?? null;
+                            }
+                        } catch (Throwable $e) {
+                            $projectImage = $project['image_principale'] ?? null;
+                        }
+                    ?>
                     <div class="project-card" data-filter="<?php echo !empty($project['statut']) ? $project['statut'] : 'en_cours'; ?>">
-                            <div class="project-image<?php echo empty($project['image_principale']) ? ' placeholder' : ''; ?>">
-                            <?php if (!empty($project['image_principale'])): ?>
-                                <?php echo renderImage($project['image_principale'], $project['titre'], '400', '200', '', 'lazy'); ?>
+                        <div class="project-image<?php echo empty($projectImage) ? ' placeholder' : ''; ?>">
+                            <?php if (!empty($projectImage)): ?>
+                                <?php echo renderImage($projectImage, $project['titre'], '400', '200', '', 'lazy'); ?>
                             <?php else: ?>
                                   <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible" />
                             <?php endif; ?>
