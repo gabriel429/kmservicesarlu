@@ -16,12 +16,9 @@
                 <tr>
                     <th>Photo</th>
                     <th>Nom</th>
-                    <th>Prénom</th>
                     <th>Email</th>
-                    <th>Username</th>
                     <th>Rôle</th>
                     <th>Statut</th>
-                    <th>Date Création</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -49,12 +46,9 @@
                                     <?php endif; ?>
                                 </td>
                                 <td data-label="Nom"><strong><?php echo htmlspecialchars($user['nom'] ?? ''); ?></strong></td>
-                                <td data-label="Prénom"><?php echo htmlspecialchars($user['prenom'] ?? ''); ?></td>
                                 <td data-label="Email"><?php echo htmlspecialchars($user['email'] ?? ''); ?></td>
-                                <td data-label="Username"><code><?php echo htmlspecialchars($user['username'] ?? ''); ?></code></td>
                                 <td data-label="Rôle"><span class="badge badge-info"><?php echo htmlspecialchars($user['role'] ?? ''); ?></span></td>
                                 <td data-label="Statut"><span class="badge <?php echo $statusBadge; ?>"><?php echo $statusText; ?></span></td>
-                                <td data-label="Date"><?php echo $user['date_creation'] ? date('d/m/Y', strtotime($user['date_creation'])) : 'N/A'; ?></td>
                                 <td data-label="Actions">
                                     <button class="btn btn-sm btn-info" onclick="editUser(<?php echo $user['id']; ?>)">Éditer</button>
                                     <button class="btn btn-sm btn-danger" onclick="deleteUser(<?php echo $user['id']; ?>)">Supprimer</button>
