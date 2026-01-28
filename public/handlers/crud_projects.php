@@ -10,9 +10,7 @@ $response = ['success' => false, 'message' => 'Erreur'];
 
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../app/MySQL.php';
-require_once __DIR__ . '/../../app/Supabase.php';
-
-use App\Supabase;
+// Supabase removed: storage handled locally under public/uploads/projects/
 
 function ensureProjectAuditTable() {
     try {
@@ -66,63 +64,54 @@ try {
     }
     
     function handleProjectImageUploads($projectId, $keepExisting = false) {
+        global $uploadsDir;
         // Supprimer les anciennes images si on fait une mise à jour (sauf si keepExisting)
         if ($keepExisting === false) {
             $existingImages = MySQLCore::fetchAll("SELECT id, image_path FROM project_images WHERE project_id = ?", [$projectId]);
             foreach ($existingImages as $img) {
-                // Supprimer de Supabase si c'est une URL
-                if (str_starts_with((string)$img['image_path'], 'http')) {
-                    try {
-                        // Extraire le chemin depuis l'URL Supabase
-                        preg_match('/projects\/(.+)$/', $img['image_path'], $matches);
-                        if (!empty($matches[1])) {
-                            Supabase::deleteFile('projects', $matches[1]);
-                        }
-                    } catch (Throwable $e) {}
+                // Supprimer local si existant
+                if (!str_starts_with((string)$img['image_path'], 'http') && file_exists($uploadsDir . $img['image_path'])) {
+                    @unlink($uploadsDir . $img['image_path']);
                 }
                 MySQLCore::execute("DELETE FROM project_images WHERE id = ?", [$img['id']]);
             }
         }
-        
+
         if (!isset($_FILES['images']) || empty($_FILES['images']['name'][0])) {
             return; // Aucune image
         }
-        
+
         $files = $_FILES['images'];
         $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         $uploaded = 0;
-        
+
         for ($i = 0; $i < count($files['name']); $i++) {
             if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) continue;
             if ($files['error'][$i] !== UPLOAD_ERR_OK) continue;
             if ($uploaded >= 5) break; // Max 5 images
-            
+
             if (!in_array($files['type'][$i], $allowed)) continue;
             if ($files['size'][$i] > 5 * 1024 * 1024) continue; // 5MB max
-            
+
             $ext = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
             $ext = $ext === 'jpeg' ? 'jpg' : $ext;
             $filename = 'project_' . $projectId . '_' . time() . '_' . $uploaded . '.' . $ext;
-            
+
             try {
-                // Lire le contenu du fichier
-                $fileContent = file_get_contents($files['tmp_name'][$i]);
-                
-                // Uploader sur Supabase
-                $result = Supabase::uploadFile('projects', $filename, $fileContent, $files['type'][$i]);
-                
-                // Obtenir l'URL publique
-                $publicUrl = Supabase::getPublicUrl('projects', $filename);
-                
-                // Enregistrer dans la base de données
+                // Déplacer vers dossier local
+                $target = $uploadsDir . $filename;
+                if (!move_uploaded_file($files['tmp_name'][$i], $target)) {
+                    throw new Exception('Impossible de sauvegarder l\'image locale');
+                }
+
+                // Enregistrer le nom de fichier dans la base (chemin relatif attendu par le reste de l'app)
                 MySQLCore::execute(
                     "INSERT INTO project_images (project_id, image_path, ordre) VALUES (?, ?, ?)",
-                    [$projectId, $publicUrl, $uploaded]
+                    [$projectId, $filename, $uploaded]
                 );
                 $uploaded++;
             } catch (Throwable $e) {
-                // Continuer avec l'image suivante en cas d'erreur
-                error_log('Error uploading project image: ' . $e->getMessage());
+                error_log('Error saving project image locally: ' . $e->getMessage());
             }
         }
     }

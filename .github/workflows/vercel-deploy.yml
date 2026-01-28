@@ -1,33 +1,5 @@
-name: Deploy to Vercel (main)
+name: Vercel deploy disabled
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
-concurrency:
-  group: vercel-deploy-main
-  cancel-in-progress: true
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel
-
-      - name: Deploy (Vercel)
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+# Vercel deployment workflow intentionally removed — this repository is
+# configured for self-hosting (Hostinger). If you later need CI/CD,
+# create an appropriate workflow for your host.

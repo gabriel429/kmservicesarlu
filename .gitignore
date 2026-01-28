@@ -6,8 +6,7 @@ Thumbs.db
 # Environment
 .env
 
-# Vercel local artifacts
-.vercel/
+
 
 # Uploads (runtime data, non versionné)
 public/uploads/

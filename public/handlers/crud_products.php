@@ -10,9 +10,7 @@ $response = ['success' => false, 'message' => 'Erreur'];
 
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../app/MySQL.php';
-require_once __DIR__ . '/../../app/Supabase.php';
-
-use App\Supabase;
+// Supabase removed: storage handled locally under public/uploads/products/
 
 function ensureProductAuditTable() {
     try {
@@ -100,24 +98,20 @@ try {
             $filename = 'product_' . $productId . '_' . time() . '_' . $uploaded . '.' . $ext;
 
             try {
-                // Lire le contenu du fichier
-                $fileContent = file_get_contents($files['tmp_name'][$i]);
-                
-                // Uploader sur Supabase
-                $result = Supabase::uploadFile('products', $filename, $fileContent, $files['type'][$i]);
-                
-                // Obtenir l'URL publique
-                $publicUrl = Supabase::getPublicUrl('products', $filename);
-                
-                // Enregistrer dans la base de données
+                // Déplacer vers dossier local
+                $target = $uploadsDir . $filename;
+                if (!move_uploaded_file($files['tmp_name'][$i], $target)) {
+                    throw new Exception('Impossible de sauvegarder l\'image locale');
+                }
+
+                // Enregistrer le nom de fichier local dans la base
                 MySQLCore::execute(
                     "INSERT INTO product_images (product_id, image_path, ordre) VALUES (?, ?, ?)",
-                    [$productId, $publicUrl, $uploaded]
+                    [$productId, $filename, $uploaded]
                 );
                 $uploaded++;
             } catch (Throwable $e) {
-                // Continuer avec l'image suivante en cas d'erreur
-                error_log('Error uploading product image: ' . $e->getMessage());
+                error_log('Error saving product image locally: ' . $e->getMessage());
             }
         }
     }
