@@ -32,10 +32,7 @@ try {
         error_log("Dossier uploads/users créé");
     }
     
-    echo "✓ Initialisation complète\n";
-    
 } catch (Exception $e) {
     error_log("Erreur initialisation: " . $e->getMessage());
-    echo "✗ Erreur: " . $e->getMessage();
 }
 ?>
