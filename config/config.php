@@ -7,6 +7,9 @@ if (!defined('DB_PASS')) define('DB_PASS', 'Kmservices@@Kin243');
 // Auto-initialiser les tables manquantes
 @require_once __DIR__ . '/../app/init_tables.php';
 
+// Auto-initialiser les colonnes manquantes
+@require_once __DIR__ . '/../app/init_columns.php';
+
 // Détection précise des chemins
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';

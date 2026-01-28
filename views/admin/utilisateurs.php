@@ -32,7 +32,7 @@
                         require_once dirname(__DIR__, 2) . '/app/MySQL.php';
                     }
                     $users = MySQLCore::fetchAll(
-                        "SELECT id, nom, prenom, email, username, role, active, photo, date_creation FROM users ORDER BY date_creation DESC"
+                        "SELECT id, nom, COALESCE(prenom, '') as prenom, email, username, role, active, COALESCE(photo, '') as photo, date_creation FROM users ORDER BY date_creation DESC"
                     );
                     
                     if (!empty($users)):

@@ -191,7 +191,7 @@ try {
             }
             
             $user = MySQLCore::fetch(
-                "SELECT id, username, email, nom, prenom, role, active, photo FROM users WHERE id = ?",
+                "SELECT id, username, email, nom, COALESCE(prenom, '') as prenom, role, active, COALESCE(photo, '') as photo FROM users WHERE id = ?",
                 [$id]
             );
             $response = [
