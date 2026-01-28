@@ -73,13 +73,7 @@ if (!isset($products) || empty($products) || !isset($categories)) {
                         <?php foreach ($products as $product): ?>
                             <div class="product-card">
                                 <div class="product-image">
-                                    <?php if (!empty($product['image_principale'])): ?>
-                                        <img src="/img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($product['nom']); ?>" loading="lazy" width="400" height="200"
-                                             srcset="/img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/<?php echo htmlspecialchars($product['image_principale']); ?>&w=400&h=200&q=85&format=webp 400w"
-                                             sizes="(max-width: 768px) 100vw, 400px">
-                                    <?php else: ?>
-                                        <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_product.svg" alt="Image indisponible">
-                                    <?php endif; ?>
+                                    <?php echo renderImage($product['image_principale'], $product['nom'], '400', '200'); ?>
                                     <?php if (isset($product['prix_promotion']) && !empty($product['prix_promotion'])): ?>
                                         <span class="product-badge">Promo</span>
                                     <?php endif; ?>
