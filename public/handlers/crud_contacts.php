@@ -83,7 +83,7 @@ try {
             if (!$id || !$email || !$message) throw new Exception('Données incomplètes');
             
             $subject = "Réponse à votre message - KM Services";
-            $headers = "From: contact@kmservices.cd\r\nContent-Type: text/plain; charset=UTF-8\r\n";
+            $headers = "From: contact@kmservicesarlu.cd\r\nContent-Type: text/plain; charset=UTF-8\r\n";
             $body = "Bonjour " . htmlspecialchars($nom) . ",\n\n";
             $body .= "Voici la réponse à votre message:\n\n";
             $body .= htmlspecialchars($message) . "\n\n";

@@ -122,11 +122,11 @@ try {
         $body .= "Nous vous contacterons bientôt pour confirmer les détails de la livraison.\n\n";
         $body .= "Cordialement,\n";
         $body .= "L'équipe KM Services\n";
-        $body .= "contact@kmservices.cd\n";
+        $body .= "contact@kmservicesarlu.cd\n";
 
-        $headers = "From: contact@kmservices.cd\r\n";
+        $headers = "From: contact@kmservicesarlu.cd\r\n";
         $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $headers .= "Reply-To: contact@kmservices.cd\r\n";
+        $headers .= "Reply-To: contact@kmservicesarlu.cd\r\n";
 
         @mail($email_client, $subject, $body, $headers);
 

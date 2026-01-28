@@ -91,6 +91,8 @@
         
         const formData = new FormData(this);
         formData.append('action', 'save_settings');
+        // Ajouter l'ID de session pour authentification cross-domain
+        formData.append('_session_id', '<?php echo session_id(); ?>');
         
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
@@ -100,18 +102,33 @@
         try {
             const response = await fetch('<?php echo APP_URL; ?>handlers/crud_settings.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
             
-            const result = await response.json();
+            const text = await response.text();
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                console.error('Réponse serveur:', text);
+                alert('✗ Erreur serveur: Réponse invalide');
+                throw new Error('Réponse JSON invalide');
+            }
             
-            if (result.success) {
+            if (response.ok && result.success) {
                 alert('✓ Paramètres enregistrés avec succès!');
             } else {
-                alert('✗ Erreur: ' + (result.message || 'Impossible de sauvegarder'));
+                const errorMsg = result.message || 'Impossible de sauvegarder (erreur ' + response.status + ')';
+                alert('✗ Erreur: ' + errorMsg);
+                console.error('Réponse serveur complète:', result);
             }
         } catch (error) {
             alert('✗ Erreur: ' + error.message);
+            console.error('Erreur fetch:', error);
         } finally {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;

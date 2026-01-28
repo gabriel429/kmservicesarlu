@@ -49,11 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $body .= "Nous traiterons votre demande et vous répondrons dans les meilleurs délais.\n\n";
                 $body .= "Cordialement,\n";
                 $body .= "L'équipe KM Services\n";
-                $body .= "contact@kmservices.cd\n";
+                $body .= "contact@kmservicesarlu.cd\n";
                 
-                $headers = "From: contact@kmservices.cd\r\n";
+                $headers = "From: contact@kmservicesarlu.cd\r\n";
                 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-                $headers .= "Reply-To: contact@kmservices.cd\r\n";
+                $headers .= "Reply-To: contact@kmservicesarlu.cd\r\n";
                 
                 @mail($email, $subject, $body, $headers);
                 
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="fas fa-envelope"></i>
                     <div>
                         <h3>Email</h3>
-                        <p><a href="mailto:contact@kmservices.cd">contact@kmservices.cd</a></p>
+                        <p><a href="mailto:contact@kmservicesarlu.cd">contact@kmservicesarlu.cd</a></p>
                     </div>
                 </div>
                 

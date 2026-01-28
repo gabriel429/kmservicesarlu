@@ -196,5 +196,5 @@ En cas de problème, consultez :
 
 ---
 
-**Support** : contact@kmservices.cd
+**Support** : contact@kmservicesarlu.cd
 **Documentation** : Consultez le README.md

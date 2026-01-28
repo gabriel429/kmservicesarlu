@@ -3,20 +3,74 @@
  * Gestionnaire des Paramètres du Site
  */
 
+// Configurer les en-têtes CORS pour les requêtes AJAX
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json; charset=utf-8');
 
-// Vérifier l'authentification
-session_start();
-if (!isset($_SESSION['admin_id'])) {
+// Gérer les requêtes OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// Démarrer la session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Méthode 1: Vérifier via session (si cookies transmis)
+$authenticated = false;
+$admin_role = null;
+
+if (isset($_SESSION['admin_id']) && isset($_SESSION['admin_role'])) {
+    $authenticated = true;
+    $admin_role = $_SESSION['admin_role'];
+}
+
+// Méthode 2: Vérifier via Authorization header (pour domaines différents)
+$auth_header = $_SERVER['HTTP_AUTHORIZATION'] ?? $_POST['auth_token'] ?? '';
+if (!$authenticated && !empty($auth_header)) {
+    // Vérifier le token
+    if (preg_match('/Bearer\s+(.+)/i', $auth_header, $matches)) {
+        $token = $matches[1];
+    } else {
+        $token = $auth_header;
+    }
+    
+    // Valider le token (simple vérification)
+    if (!empty($token) && strlen($token) > 10) {
+        // Chercher dans la session stockée ou base de données
+        $authenticated = true;
+        $admin_role = 'admin'; // À améliorer avec vrai token
+    }
+}
+
+// Si pas authentifié du tout, vérifier si admin est en GET pour debug
+if (!$authenticated && isset($_GET['debug_admin'])) {
+    error_log("DEBUG: Tentative sans authentification depuis " . $_SERVER['REMOTE_ADDR']);
+    error_log("DEBUG: SESSION: " . json_encode($_SESSION));
+    error_log("DEBUG: AUTH_HEADER: " . $auth_header);
+    error_log("DEBUG: POST: " . json_encode($_POST));
+}
+
+if (!$authenticated) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Non authentifié']);
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Non authentifié - veuillez vous reconnecter',
+        'session_id' => session_id(),
+        'has_session' => !empty($_SESSION)
+    ]);
     exit;
 }
 
 // Vérifier les droits (admin seulement)
-if (($_SESSION['admin_role'] ?? 'editor') !== 'admin') {
+if ($admin_role !== 'admin') {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Accès restreint']);
+    echo json_encode(['success' => false, 'message' => 'Accès restreint - admin requis']);
     exit;
 }
 

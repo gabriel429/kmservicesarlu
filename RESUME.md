@@ -155,7 +155,7 @@ Ouvrez : http://localhost/kmservices/check.php
 
 ### Changer les Coordonnées
 Cherchez les placeholder et remplacez par vos infos :
-- `contact@kmservices.cd`
+- `contact@kmservicesarlu.cd`
 - `+243 (0) XXX XXX XXX`
 - Haut-Katanga, RD Congo
 

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../app/MySQL.php';
 
 $username = $argv[1] ?? null;
 $password = $argv[2] ?? null;
-$email    = $argv[3] ?? ($username ? ($username . '@kmservices.cd') : null);
+$email    = $argv[3] ?? ($username ? ($username . '@kmservicesarlu.cd') : null);
 $role     = $argv[4] ?? 'admin';
 
 if (!$username || !$password) {

@@ -79,7 +79,7 @@ Remplissez les champs et publiez
 ## 🎯 Premiers Pas Recommandés
 
 1. ✅ Changez le mot de passe admin
-2. ✅ Mettez à jour les coordonnées (contact@kmservices.cd)
+2. ✅ Mettez à jour les coordonnées (contact@kmservicesarlu.cd)
 3. ✅ Ajoutez vos premiers projets
 4. ✅ Ajoutez vos produits
 5. ✅ Testez les formulaires

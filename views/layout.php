@@ -73,7 +73,7 @@ if (!class_exists('MySQLCore')) {
                 <div class="footer-section">
                     <h3>Contact</h3>
                     <p><i class="fas fa-phone"></i> +243 (0) 892 017 793/+243 (0) 999 920 715</p>
-                    <p><i class="fas fa-envelope"></i> contact@kmservices.cd</p>
+                    <p><i class="fas fa-envelope"></i> contact@kmservicesarlu.cd</p>
                     <p><i class="fas fa-map-marker-alt"></i> 235, Kabalo, Q/Makutano, C/Lubumbashi,Haut-Katanga Rép. Dém. du Congo</p>
                 </div>
             </div>
