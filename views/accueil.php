@@ -65,7 +65,16 @@
                     <div class="project-card">
                         <div class="project-image">
                             <?php if ($project['image_principale']): ?>
-                                <img src="<?php echo APP_URL; ?>uploads/<?php echo htmlspecialchars($project['image_principale']); ?>" alt="<?php echo htmlspecialchars($project['titre']); ?>">
+                                <?php $rel = $project['image_principale']; $isUrl = is_string($rel) && str_starts_with($rel, 'http'); ?>
+                                <?php if ($isUrl): ?>
+                                    <img src="/img?url=<?php echo urlencode($rel); ?>&w=400&h=250&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="250"
+                                       srcset="/img?url=<?php echo urlencode($rel); ?>&w=200&h=250&q=85&format=webp 200w, /img?url=<?php echo urlencode($rel); ?>&w=400&h=250&q=85&format=webp 400w"
+                                       sizes="(max-width: 768px) 100vw, 400px">
+                                <?php else: ?>
+                                    <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=250&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="250"
+                                       srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&h=250&q=85&format=webp 200w, /img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&h=250&q=85&format=webp 400w"
+                                       sizes="(max-width: 768px) 100vw, 400px">
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
                         <div class="project-info">
