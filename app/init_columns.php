@@ -4,8 +4,7 @@
  * Ajoute automatiquement les colonnes photo et prenom si elles manquent
  */
 
-require_once __DIR__ . '/config/config.php';
-require_once __DIR__ . '/app/MySQL.php';
+require_once __DIR__ . '/MySQL.php';
 
 try {
     // Ajouter colonne photo si elle n'existe pas
