@@ -7,7 +7,6 @@
 <div class="admin-section">
     <div class="section-header">
         <h2>Gestion des Forages</h2>
-        <button class="btn btn-primary" onclick="openAddForageModal()">+ Ajouter un Forage</button>
     </div>
     
     <div class="table-container">

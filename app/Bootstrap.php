@@ -36,9 +36,9 @@ try {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             treated_by INT DEFAULT NULL,
-            FOREIGN KEY (treated_by) REFERENCES users(id) ON DELETE SET NULL,
             INDEX idx_statut (statut),
-            INDEX idx_created_at (created_at)
+            INDEX idx_created_at (created_at),
+            INDEX idx_treated_by (treated_by)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     );
 } catch (Throwable $e) {
