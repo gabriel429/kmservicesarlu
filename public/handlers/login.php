@@ -34,7 +34,7 @@ try {
     
     // Connexion via MySQLi pur
     $user = MySQLCore::fetch(
-        "SELECT id, username, password, role FROM users WHERE username = ? OR email = ?",
+        "SELECT id, username, password, role, COALESCE(photo, '') as photo FROM users WHERE username = ? OR email = ?",
         [$username, $username]
     );
     
@@ -55,6 +55,7 @@ try {
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_username'] = $user['username'];
         $_SESSION['admin_role'] = $user['role'];
+        $_SESSION['admin_photo'] = $user['photo'];
         // Log login_success
         try {
             $details = json_encode([

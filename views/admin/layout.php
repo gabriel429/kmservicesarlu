@@ -74,7 +74,7 @@ if (!class_exists('MySQLCore')) {
             padding: 1.5rem 2rem;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
@@ -87,6 +87,31 @@ if (!class_exists('MySQLCore')) {
         .admin-header h1 {
             color: var(--primary-color);
             font-size: 1.8rem;
+            flex: 1;
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-user-info {
+            text-align: right;
+        }
+
+        .admin-user-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .admin-user-photo:hover {
+            transform: scale(1.1);
         }
 
         .admin-sidebar {
@@ -412,6 +437,22 @@ if (!class_exists('MySQLCore')) {
                 margin: 0;
                 order: 0;
                 flex: 1;
+            }
+
+            .admin-header-right {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                order: 1;
+            }
+
+            .admin-user-info {
+                display: none;
+            }
+
+            .admin-user-photo {
+                width: 35px;
+                height: 35px;
             }
 
             .admin-header > div {
@@ -836,10 +877,25 @@ if (!class_exists('MySQLCore')) {
                     <i class="fas fa-bars"></i>
                 </button>
                 <h1><?php echo isset($adminPageTitle) ? $adminPageTitle : 'Tableau de Bord'; ?></h1>
-                <div style="color: var(--text-secondary);">
-                    <?php $u = $_SESSION['admin_username'] ?? 'Utilisateur'; $r = $_SESSION['admin_role'] ?? 'editor'; ?>
-                    <span id="currentUser"><?php echo htmlspecialchars($u); ?> (<?php echo htmlspecialchars($r); ?>)</span> | 
-                    <a href="<?php echo APP_URL; ?>">Voir le site</a>
+                <div class="admin-header-right">
+                    <div class="admin-user-info">
+                        <div>
+                            <?php $u = $_SESSION['admin_username'] ?? 'Utilisateur'; $r = $_SESSION['admin_role'] ?? 'editor'; ?>
+                            <span id="currentUser"><strong><?php echo htmlspecialchars($u); ?></strong></span><br>
+                            <small style="color: var(--text-secondary);"><?php echo htmlspecialchars($r); ?></small> | 
+                            <a href="<?php echo APP_URL; ?>" style="color: var(--primary-color); text-decoration: none;">Voir le site</a>
+                        </div>
+                    </div>
+                    <?php 
+                    $photo = $_SESSION['admin_photo'] ?? '';
+                    if ($photo && $photo !== ''):
+                    ?>
+                        <img src="<?php echo ASSET_URL; ?>uploads/<?php echo htmlspecialchars($photo); ?>" alt="Photo" class="admin-user-photo" title="<?php echo htmlspecialchars($u); ?>">
+                    <?php else: ?>
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem;">
+                            <?php echo strtoupper(substr($u, 0, 1)); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </header>
 
