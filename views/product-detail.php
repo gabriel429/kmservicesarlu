@@ -17,16 +17,7 @@
                 <div class="product-images">
                     <?php if (!empty($product['image_principale'])): ?>
                         <div class="main-image">
-                            <?php $imgSrc = $product['image_principale']; $isUrl = is_string($imgSrc) && str_starts_with($imgSrc, 'http'); ?>
-                            <?php if ($isUrl): ?>
-                                <img src="/img?url=<?php echo urlencode($imgSrc); ?>&w=720&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" style="height: auto; max-height: 500px; object-fit: contain;"
-                                     srcset="/img?url=<?php echo urlencode($imgSrc); ?>&w=360&q=85&format=webp 360w, /img?url=<?php echo urlencode($imgSrc); ?>&w=720&q=85&format=webp 720w"
-                                     sizes="(max-width: 768px) 100vw, 720px">
-                            <?php else: ?>
-                                <img src="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&q=85&format=webp" id="mainImage" alt="<?php echo htmlspecialchars($product['nom']); ?>" width="720" style="height: auto; max-height: 500px; object-fit: contain;"
-                                     srcset="/img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=360&q=85&format=webp 360w, /img?p=uploads/<?php echo htmlspecialchars($imgSrc); ?>&w=720&q=85&format=webp 720w"
-                                     sizes="(max-width: 768px) 100vw, 720px">
-                            <?php endif; ?>
+                            <?php echo renderImage($product['image_principale'], $product['nom'], '720', '500', '', 'lazy'); ?>
                         </div>
                     <?php else: ?>
                         <div class="main-image">
@@ -111,16 +102,7 @@
                             <div class="product-card">
                                 <div class="product-image">
                                     <?php if (!empty($p['image_principale'])): ?>
-                                        <?php $rel = $p['image_principale']; $isUrl2 = is_string($rel) && str_starts_with($rel, 'http'); ?>
-                                        <?php if ($isUrl2): ?>
-                                            <img src="/img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['nom']); ?>" loading="lazy" width="400" height="200"
-                                                 srcset="/img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
-                                                 sizes="(max-width: 768px) 100vw, 400px">
-                                        <?php else: ?>
-                                            <img src="/img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($p['nom']); ?>" loading="lazy" width="400" height="200"
-                                                 srcset="/img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?p=uploads/<?php echo htmlspecialchars($rel); ?>&w=400&h=200&q=85&format=webp 400w"
-                                                 sizes="(max-width: 768px) 100vw, 400px">
-                                        <?php endif; ?>
+                                        <?php echo renderImage($p['image_principale'], $p['nom'], '400', '200', '', 'lazy'); ?>
                                     <?php else: ?>
                                         <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_product.svg" alt="Image indisponible">
                                     <?php endif; ?>

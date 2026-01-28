@@ -28,18 +28,9 @@ if (!isset($projects) || empty($projects)) {
             <?php if (!empty($projects)): ?>
                 <?php foreach ($projects as $project): ?>
                     <div class="project-card" data-filter="<?php echo !empty($project['statut']) ? $project['statut'] : 'en_cours'; ?>">
-                        <div class="project-image<?php echo empty($project['image_principale']) ? ' placeholder' : ''; ?>">
+                            <div class="project-image<?php echo empty($project['image_principale']) ? ' placeholder' : ''; ?>">
                             <?php if (!empty($project['image_principale'])): ?>
-                                <?php $rel = $project['image_principale']; $isUrl = is_string($rel) && str_starts_with($rel, 'http'); ?>
-                                <?php if ($isUrl): ?>
-                                    <img src="/img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" height="200"
-                                       srcset="/img?url=<?php echo urlencode($rel); ?>&w=200&h=200&q=85&format=webp 200w, /img?url=<?php echo urlencode($rel); ?>&w=400&h=200&q=85&format=webp 400w"
-                                       sizes="(max-width: 768px) 100vw, 400px">
-                                <?php else: ?>
-                                    <img src="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&q=85&format=webp" alt="<?php echo htmlspecialchars($project['titre']); ?>" loading="lazy" width="400" style="height: auto; aspect-ratio: 2; object-fit: contain;"
-                                       srcset="/img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=200&q=85&format=webp 200w, /img?p=uploads/projects/<?php echo htmlspecialchars($rel); ?>&w=400&q=85&format=webp 400w"
-                                           sizes="(max-width: 768px) 100vw, 400px">
-                                <?php endif; ?>
+                                <?php echo renderImage($project['image_principale'], $project['titre'], '400', '200', '', 'lazy'); ?>
                             <?php else: ?>
                                   <img src="<?php echo ASSET_URL; ?>assets/images/placeholder_project.svg" alt="Image indisponible" />
                             <?php endif; ?>
