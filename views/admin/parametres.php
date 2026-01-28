@@ -86,8 +86,35 @@
 </style>
 
 <script>
-    document.querySelector('.settings-form').addEventListener('submit', function(e) {
+    document.querySelector('.settings-form').addEventListener('submit', async function(e) {
         e.preventDefault();
-        alert('Paramètres enregistrés avec succès!');
+        
+        const formData = new FormData(this);
+        formData.append('action', 'save_settings');
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Enregistrement...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('<?php echo APP_URL; ?>handlers/crud_settings.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('✓ Paramètres enregistrés avec succès!');
+            } else {
+                alert('✗ Erreur: ' + (result.message || 'Impossible de sauvegarder'));
+            }
+        } catch (error) {
+            alert('✗ Erreur: ' + error.message);
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
     });
 </script>

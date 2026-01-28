@@ -49,7 +49,7 @@
                     else:
                 ?>
                         <tr>
-                            <td colspan="5" class="text-center">Aucun forage</td>
+                            <td colspan="5" class="text-center">Aucune demande de devis forage</td>
                         </tr>
                 <?php
                     endif;
