@@ -14,8 +14,11 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th>Photo</th>
                     <th>Nom</th>
+                    <th>Prénom</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Rôle</th>
                     <th>Statut</th>
                     <th>Date Création</th>
@@ -29,7 +32,7 @@
                         require_once dirname(__DIR__, 2) . '/app/MySQL.php';
                     }
                     $users = MySQLCore::fetchAll(
-                        "SELECT id, nom, email, role, active, date_creation FROM users ORDER BY date_creation DESC"
+                        "SELECT id, nom, prenom, email, username, role, active, photo, date_creation FROM users ORDER BY date_creation DESC"
                     );
                     
                     if (!empty($users)):
@@ -38,9 +41,18 @@
                             $statusText = $user['active'] ? 'Actif' : 'Inactif';
                 ?>
                             <tr>
+                                <td data-label="Photo">
+                                    <?php if ($user['photo']): ?>
+                                        <img src="<?php echo ASSET_URL; ?>uploads/<?php echo htmlspecialchars($user['photo']); ?>" alt="Photo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                    <?php else: ?>
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #ccc; display: flex; align-items: center; justify-content: center;">-</div>
+                                    <?php endif; ?>
+                                </td>
                                 <td data-label="Nom"><strong><?php echo htmlspecialchars($user['nom'] ?? ''); ?></strong></td>
+                                <td data-label="Prénom"><?php echo htmlspecialchars($user['prenom'] ?? ''); ?></td>
                                 <td data-label="Email"><?php echo htmlspecialchars($user['email'] ?? ''); ?></td>
-                                <td data-label="Rôle"><?php echo htmlspecialchars($user['role'] ?? ''); ?></td>
+                                <td data-label="Username"><code><?php echo htmlspecialchars($user['username'] ?? ''); ?></code></td>
+                                <td data-label="Rôle"><span class="badge badge-info"><?php echo htmlspecialchars($user['role'] ?? ''); ?></span></td>
                                 <td data-label="Statut"><span class="badge <?php echo $statusBadge; ?>"><?php echo $statusText; ?></span></td>
                                 <td data-label="Date"><?php echo $user['date_creation'] ? date('d/m/Y', strtotime($user['date_creation'])) : 'N/A'; ?></td>
                                 <td data-label="Actions">
@@ -70,6 +82,8 @@
     function openAddUserModal() {
         document.getElementById('userForm').reset();
         document.getElementById('userId').value = '';
+        document.getElementById('passwordField').style.display = 'block';
+        document.getElementById('userPassword').required = true;
         document.getElementById('userModalTitle').textContent = 'Ajouter un Utilisateur';
         document.getElementById('userModal').style.display = 'flex';
     }
@@ -86,8 +100,12 @@
                     document.getElementById('userId').value = data.data.id;
                     document.getElementById('userNom').value = data.data.nom;
                     document.getElementById('userEmail').value = data.data.email;
+                    document.getElementById('userPrenom').value = data.data.prenom || '';
                     document.getElementById('userRole').value = data.data.role;
                     document.getElementById('userActif').checked = data.data.active;
+                    // En édition, le mot de passe n'est pas requis
+                    document.getElementById('passwordField').style.display = 'none';
+                    document.getElementById('userPassword').required = false;
                     document.getElementById('userModalTitle').textContent = 'Éditer l\'Utilisateur';
                     document.getElementById('userModal').style.display = 'flex';
                 }
@@ -114,12 +132,35 @@
             userForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const fd = new FormData();
-                fd.append('action', document.getElementById('userId').value ? 'update' : 'create');
+                const isUpdate = document.getElementById('userId').value;
+                
+                fd.append('action', isUpdate ? 'update' : 'create');
                 fd.append('id', document.getElementById('userId').value);
                 fd.append('nom', document.getElementById('userNom').value);
                 fd.append('email', document.getElementById('userEmail').value);
+                fd.append('prenom', document.getElementById('userPrenom').value);
                 fd.append('role', document.getElementById('userRole').value);
                 fd.append('active', document.getElementById('userActif').checked ? 1 : 0);
+                
+                // Ajouter mot de passe seulement s'il est rempli
+                const password = document.getElementById('userPassword').value;
+                if (password) {
+                    if (password.length < 8) {
+                        alert('Le mot de passe doit avoir au moins 8 caractères');
+                        return;
+                    }
+                    fd.append('password', password);
+                }
+                
+                // Ajouter photo si sélectionnée
+                const photoFile = document.getElementById('userPhoto').files[0];
+                if (photoFile) {
+                    if (photoFile.size > 2 * 1024 * 1024) {
+                        alert('La photo doit faire moins de 2MB');
+                        return;
+                    }
+                    fd.append('photo', photoFile);
+                }
                 
                 fetch(ASSET_URL + 'handlers/crud_users.php', {method: 'POST', body: fd})
                     .then(r => r.json())
@@ -160,12 +201,28 @@
                 <input type="email" id="userEmail" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
             </div>
             
+            <div style="margin-bottom: 1rem;" id="passwordField">
+                <label for="userPassword" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Mot de passe *</label>
+                <input type="password" id="userPassword" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+                <small style="color: #666;">Minimum 8 caractères</small>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label for="userPrenom" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Prénom</label>
+                <input type="text" id="userPrenom" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label for="userPhoto" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Photo de profil</label>
+                <input type="file" id="userPhoto" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+                <small style="color: #666;">JPG, PNG (max 2MB)</small>
+            </div>
+            
             <div style="margin-bottom: 1rem;">
                 <label for="userRole" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Rôle *</label>
                 <select id="userRole" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
-                    <option value="user">Utilisateur</option>
+                    <option value="editor">Éditeur</option>
                     <option value="admin">Administrateur</option>
-                    <option value="moderator">Modérateur</option>
                 </select>
             </div>
             

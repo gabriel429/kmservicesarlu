@@ -40,39 +40,60 @@ try {
                 if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'admin') {
                     throw new Exception('Accès refusé: réservé aux administrateurs');
                 }
-                $username = $_POST['username'] ?? '';
+                $nom = $_POST['nom'] ?? '';
+                $prenom = $_POST['prenom'] ?? '';
                 $email = $_POST['email'] ?? '';
                 $password = $_POST['password'] ?? '';
                 $role = $_POST['role'] ?? 'editor';
                 
-                if (empty($username) || empty($email) || empty($password)) {
-                    throw new Exception('Username, email et mot de passe sont requis');
+                if (empty($nom) || empty($email) || empty($password)) {
+                    throw new Exception('Nom, email et mot de passe sont requis');
                 }
                 
-                // Vérifier si l'utilisateur existe déjà
+                // Générer un username basé sur l'email
+                $username = strtolower(explode('@', $email)[0]);
+                
+                // Vérifier si l'email existe déjà
                 $existing = MySQLCore::fetch(
-                    "SELECT id FROM users WHERE username = ? OR email = ?",
-                    [$username, $email]
+                    "SELECT id FROM users WHERE email = ?",
+                    [$email]
                 );
                 
                 if ($existing) {
-                    throw new Exception('Cet utilisateur ou cet email existe déjà');
+                    throw new Exception('Cet email existe déjà');
                 }
                 
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                 
+                // Gérer l'upload de photo
+                $photoPath = null;
+                if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+                    $uploadDir = UPLOAD_DIR . 'users/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    
+                    $fileName = uniqid() . '_' . basename($_FILES['photo']['name']);
+                    $filePath = $uploadDir . $fileName;
+                    
+                    if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                        $photoPath = 'users/' . $fileName;
+                    }
+                }
+                
                 MySQLCore::execute(
-                    "INSERT INTO users (username, email, password, role) 
-                     VALUES (?, ?, ?, ?)",
-                    [$username, $email, $hashedPassword, $role]
+                    "INSERT INTO users (username, email, password, role, nom, prenom, photo) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [$username, $email, $hashedPassword, $role, $nom, $prenom, $photoPath]
                 );
                 
+                $userId = MySQLCore::lastInsertId();
                 $response = [
                     'success' => true,
                     'message' => 'Utilisateur créé avec succès',
-                    'id' => MySQLCore::lastInsertId()
+                    'id' => $userId
                 ];
-                logUserAction('create_user', $response['id'], json_encode(['username' => $username, 'email' => $email]));
+                logUserAction('create_user', $userId, json_encode(['email' => $email, 'nom' => $nom]));
             }
             break;
             
@@ -82,7 +103,8 @@ try {
                     throw new Exception('Accès refusé: réservé aux administrateurs');
                 }
                 $id = $_POST['id'] ?? 0;
-                $username = $_POST['username'] ?? '';
+                $nom = $_POST['nom'] ?? '';
+                $prenom = $_POST['prenom'] ?? '';
                 $email = $_POST['email'] ?? '';
                 $role = $_POST['role'] ?? 'editor';
                 $password = $_POST['password'] ?? '';
@@ -92,23 +114,47 @@ try {
                     throw new Exception('ID de l\'utilisateur requis');
                 }
                 
+                // Récupérer les données actuelles
+                $user = MySQLCore::fetch("SELECT photo FROM users WHERE id = ?", [$id]);
+                $photoPath = $user['photo'];
+                
+                // Gérer l'upload de photo si présent
+                if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+                    $uploadDir = UPLOAD_DIR . 'users/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    
+                    // Supprimer l'ancienne photo
+                    if ($photoPath && file_exists(UPLOAD_DIR . $photoPath)) {
+                        unlink(UPLOAD_DIR . $photoPath);
+                    }
+                    
+                    $fileName = uniqid() . '_' . basename($_FILES['photo']['name']);
+                    $filePath = $uploadDir . $fileName;
+                    
+                    if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                        $photoPath = 'users/' . $fileName;
+                    }
+                }
+                
                 if ($password) {
                     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                     MySQLCore::execute(
-                        "UPDATE users SET username = ?, email = ?, role = ?, password = ?, active = ? 
+                        "UPDATE users SET nom = ?, prenom = ?, email = ?, role = ?, password = ?, active = ?, photo = ? 
                          WHERE id = ?",
-                        [$username, $email, $role, $hashedPassword, $active, $id]
+                        [$nom, $prenom, $email, $role, $hashedPassword, $active, $photoPath, $id]
                     );
                 } else {
                     MySQLCore::execute(
-                        "UPDATE users SET username = ?, email = ?, role = ?, active = ? 
+                        "UPDATE users SET nom = ?, prenom = ?, email = ?, role = ?, active = ?, photo = ? 
                          WHERE id = ?",
-                        [$username, $email, $role, $active, $id]
+                        [$nom, $prenom, $email, $role, $active, $photoPath, $id]
                     );
                 }
                 
                 $response = ['success' => true, 'message' => 'Utilisateur mis à jour avec succès'];
-                logUserAction('update_user', $id, json_encode(['username' => $username, 'email' => $email, 'role' => $role]));
+                logUserAction('update_user', $id, json_encode(['nom' => $nom, 'email' => $email, 'role' => $role]));
             }
             break;
             
@@ -145,7 +191,7 @@ try {
             }
             
             $user = MySQLCore::fetch(
-                "SELECT id, username, email, role, active FROM users WHERE id = ?",
+                "SELECT id, username, email, nom, prenom, role, active, photo FROM users WHERE id = ?",
                 [$id]
             );
             $response = [
