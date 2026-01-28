@@ -35,8 +35,11 @@ function allowedExtension(string $ext): bool {
 
 function serveFile(string $path, string $mime): void {
     if (!is_file($path)) {
-        http_response_code(404);
-        echo 'Not Found';
+        // Si le fichier n'existe pas, on retourne une image vide 1x1 transparent
+        header('Content-Type: image/png');
+        header('Cache-Control: public, max-age=2592000');
+        // Image PNG 1x1 transparent
+        echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
         return;
     }
     header('Content-Type: ' . $mime);
@@ -62,9 +65,11 @@ if ($outputFormat === 'webp' && !$supportsWebp) {
     $outputFormat = 'jpeg';
 }
 
-if ($file === '' ) {
-    http_response_code(400);
-    echo 'Missing file parameter';
+// Si aucun paramètre d'image n'est fourni, retourner une image vide
+if (empty($file) && empty($p) && empty($remote)) {
+    header('Content-Type: image/png');
+    header('Cache-Control: public, max-age=86400');
+    echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
     exit;
 }
 
@@ -78,8 +83,10 @@ if ($remote && preg_match('/^https?:\/\//i', $remote)) {
     ]);
     $data = @file_get_contents($remote, false, $ctx);
     if ($data === false) {
-        http_response_code(404);
-        echo 'Remote image not accessible';
+        // Retourner une image vide si le téléchargement échoue
+        header('Content-Type: image/png');
+        header('Cache-Control: public, max-age=86400');
+        echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
         exit;
     }
     $info = @getimagesizefromstring($data);
@@ -99,8 +106,10 @@ if ($remote && preg_match('/^https?:\/\//i', $remote)) {
     // Create resource from string
     $srcImg = @imagecreatefromstring($data);
     if (!$srcImg) {
-        http_response_code(415);
-        echo 'Unsupported image data';
+        // Retourner une image vide si le décodage échoue
+        header('Content-Type: image/png');
+        header('Cache-Control: public, max-age=86400');
+        echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
         exit;
     }
 } elseif ($p) {
@@ -116,8 +125,10 @@ if ($remote && preg_match('/^https?:\/\//i', $remote)) {
     );
     $ext = strtolower(pathinfo($srcPath ?: '', PATHINFO_EXTENSION));
     if (!$allowed || !is_file($srcPath) || !allowedExtension($ext)) {
-        http_response_code(404);
-        echo 'Source image not found';
+        // Si le fichier n'existe pas, retourner une image vide transparente
+        header('Content-Type: image/png');
+        header('Cache-Control: public, max-age=86400');
+        echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
         exit;
     }
 } else {
@@ -132,8 +143,10 @@ if ($remote && preg_match('/^https?:\/\//i', $remote)) {
     $srcNorm = $srcPath ? str_replace('\\', '/', $srcPath) : false;
     $assetsNorm = ASSETS_DIR ? str_replace('\\', '/', ASSETS_DIR) : false;
     if ($srcNorm === false || $assetsNorm === false || strpos($srcNorm, $assetsNorm) !== 0 || !is_file($srcPath)) {
-        http_response_code(404);
-        echo 'Source image not found';
+        // Retourner une image vide transparent
+        header('Content-Type: image/png');
+        header('Cache-Control: public, max-age=86400');
+        echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
         exit;
     }
 }
