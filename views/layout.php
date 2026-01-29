@@ -80,7 +80,7 @@ if (!class_exists('MySQLCore')) {
             <div class="footer-bottom">
                 <p>&copy; 2025 KM Services. Tous droits réservés.</p>
                 <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8;">Développée par <a href="https://www.akilig.com/" target="_blank" rel="noopener noreferrer" style="color: #0ea5e9; text-decoration: none; font-weight: 600;">Akili Groupe</a></p>
-                <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="<?php echo APP_URL; ?>admin/login" style="color: #64748b; text-decoration: none; opacity: 0.7; hover_opacity: 1; transition: opacity 0.3s ease;">Administration</a></p>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="<?php echo APP_URL; ?>admin/login" style="color: #64748b; text-decoration: none; opacity: 0.7; hover_opacity: 1; transition: opacity 0.3s ease;">Administration test</a></p>
             </div>
         </div>
     </footer>
