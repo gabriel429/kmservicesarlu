@@ -2,9 +2,9 @@
 // Configuration globale
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'km_services');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_NAME', 'u424760992_km_services');
+define('DB_USER', 'u424760992_kmservices_use');
+define('DB_PASS', 'Kmservices@@lushi243');
 define('SITE_URL', 'https://kmservicesarlu.cd');
 
 define('WHATSAPP_NUMBER', '243000000000'); // Remplacer par le numéro officiel
