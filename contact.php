@@ -8,6 +8,12 @@ include __DIR__ . '/includes/header.php';
             <div class="col-md-6">
                 <h2 class="section-title">Contactez-nous</h2>
                 <p class="text-muted">Nous répondons sous 24h.</p>
+                <?php if (!empty($_GET['success'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa-solid fa-check-circle"></i> <strong>Message envoyé !</strong> Nous avons reçu votre message et vous répondrons dans les 24 heures.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
                 <div class="card p-4 mb-4">
                     <h6 class="fw-bold">Clients & partenaires</h6>
                     <p class="text-muted">Particuliers, entreprises et institutions publiques nous font confiance pour des solutions intégrées et durables.</p>
@@ -23,6 +29,10 @@ include __DIR__ . '/includes/header.php';
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Numéro de téléphone</label>
+                        <input type="tel" name="telephone" class="form-control" placeholder="+243..." required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Message</label>

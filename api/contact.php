@@ -11,14 +11,15 @@ if (!csrf_verify($_POST['csrf_token'] ?? null)) {
 
 $nom = trim($_POST['nom'] ?? '');
 $email = trim($_POST['email'] ?? '');
+$telephone = trim($_POST['telephone'] ?? '');
 $message = trim($_POST['message'] ?? '');
 
-if (empty($nom) || empty($email) || empty($message)) {
+if (empty($nom) || empty($email) || empty($telephone) || empty($message)) {
     redirect(SITE_URL . '/contact.php');
 }
 
 $pdo = getPDO();
-$stmt = $pdo->prepare('INSERT INTO messages_contact (nom, email, message) VALUES (?, ?, ?)');
-$stmt->execute([$nom, $email, $message]);
+$stmt = $pdo->prepare('INSERT INTO messages_contact (nom, email, telephone, message) VALUES (?, ?, ?, ?)');
+$stmt->execute([$nom, $email, $telephone, $message]);
 
 redirect(SITE_URL . '/contact.php?success=1');

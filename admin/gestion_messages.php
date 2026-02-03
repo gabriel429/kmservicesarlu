@@ -37,6 +37,7 @@ $messages = $pdo->query('SELECT * FROM messages_contact ORDER BY date_message DE
                 <tr>
                     <th>Nom</th>
                     <th>Email</th>
+                    <th>Téléphone</th>
                     <th>Message</th>
                     <th>Date</th>
                     <th>Actions</th>
@@ -50,6 +51,9 @@ $messages = $pdo->query('SELECT * FROM messages_contact ORDER BY date_message DE
                         </td>
                         <td>
                             <a href="mailto:<?= e($msg['email']); ?>"><?= e($msg['email']); ?></a>
+                        </td>
+                        <td>
+                            <a href="tel:<?= e($msg['telephone']); ?>"><?= e($msg['telephone']); ?></a>
                         </td>
                         <td>
                             <p class="mb-0 text-muted" style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -84,6 +88,7 @@ $messages = $pdo->query('SELECT * FROM messages_contact ORDER BY date_message DE
                                 <div class="modal-body">
                                     <p><strong>De:</strong> <?= e($msg['nom']); ?></p>
                                     <p><strong>Email:</strong> <a href="mailto:<?= e($msg['email']); ?>"><?= e($msg['email']); ?></a></p>
+                                    <p><strong>Téléphone:</strong> <a href="tel:<?= e($msg['telephone']); ?>"><?= e($msg['telephone']); ?></a></p>
                                     <p><strong>Date:</strong> <?= date('d/m/Y à H:i', strtotime($msg['date_message'])); ?></p>
                                     <hr>
                                     <p><strong>Message:</strong></p>
