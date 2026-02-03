@@ -1,10 +1,6 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-	RewriteBase /kmservicesarlu/
-
-	# Corrige les URL avec double dossier (/kmservicesarlu/kmservicesarlu/…)
-	RewriteCond %{REQUEST_URI} ^/kmservicesarlu/kmservicesarlu/ [NC]
-	RewriteRule ^kmservicesarlu/(.*)$ /kmservicesarlu/$1 [R=301,L]
+	RewriteBase /
 
 	# Redirige les URL avec extension .php vers une version sans extension
 	RewriteCond %{THE_REQUEST} \s/([^.]+)\.php[\s?] [NC]
