@@ -137,7 +137,7 @@ include __DIR__ . '/includes/header.php';
             <div class="col-md-6">
                 <div class="card p-0 overflow-hidden video-card">
                     <div class="ratio ratio-16x9">
-                        <video class="w-100 h-100" controls poster="assets/images/video-poster.jpg">
+                        <video class="w-100 h-100" controls poster="<?= SITE_URL ?>/assets/images/image_principale.jpeg">
                             <source src="assets/videos/publicite.mp4" type="video/mp4">
                             Votre navigateur ne supporte pas la lecture de vidéos.
                         </video>
