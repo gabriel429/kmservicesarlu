@@ -1,0 +1,26 @@
+{
+    "name": "gabriel429/kmservicesarlu",
+    "description": "Site web professionnel pour KM SERVICES SARL - Entreprise de BTP en RDC",
+    "type": "project",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Akili Groupe",
+            "email": "contact@akilig.com",
+            "homepage": "https://www.akilig.com/"
+        }
+    ],
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+        "files": [
+            "includes/config.php",
+            "includes/functions.php",
+            "includes/auth.php"
+        ]
+    },
+    "scripts": {
+        "serve": "php -S localhost:8000"
+    }
+}
