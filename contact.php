@@ -14,6 +14,12 @@ include __DIR__ . '/includes/header.php';
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 <?php endif; ?>
+                <?php if (!empty($_GET['error'])): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fa-solid fa-exclamation-circle"></i> <strong>Erreur !</strong> Une erreur s'est produite lors de l'envoi du message. Veuillez réessayer.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
                 <div class="card p-4 mb-4">
                     <h6 class="fw-bold">Clients & partenaires</h6>
                     <p class="text-muted">Particuliers, entreprises et institutions publiques nous font confiance pour des solutions intégrées et durables.</p>
