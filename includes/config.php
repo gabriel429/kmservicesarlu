@@ -5,7 +5,7 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', 'km_services');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('SITE_URL', 'http://localhost/kmservicesarlu');
+define('SITE_URL', 'https://kmservicesarlu.cd');
 
 define('WHATSAPP_NUMBER', '243000000000'); // Remplacer par le numéro officiel
 
