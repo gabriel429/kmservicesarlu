@@ -91,7 +91,13 @@ if (!$isEditor) {
                     <tr>
                         <td><strong><?= e($msg['nom']); ?></strong></td>
                         <td><a href="mailto:<?= e($msg['email']); ?>"><?= e($msg['email']); ?></a></td>
-                        <td><a href="tel:<?= e($msg['telephone']); ?>"><?= e($msg['telephone']); ?></a></td>
+                        <td>
+                            <?php if (!empty($msg['telephone'])): ?>
+                                <a href="tel:<?= e($msg['telephone']); ?>"><?= e($msg['telephone']); ?></a>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <p class="mb-0 text-muted" style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 <?= e($msg['message']); ?>

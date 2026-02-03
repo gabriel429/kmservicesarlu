@@ -14,28 +14,33 @@ $email = trim($_POST['email'] ?? '');
 $telephone = trim($_POST['telephone'] ?? '');
 $message = trim($_POST['message'] ?? '');
 
-if (empty($nom) || empty($email) || empty($telephone) || empty($message)) {
+if (empty($nom) || empty($email) || empty($message)) {
     redirect(SITE_URL . '/contact.php');
 }
 
 $pdo = getPDO();
 
 try {
-    // Essayer d'insérer avec la colonne telephone
-    $stmt = $pdo->prepare('INSERT INTO messages_contact (nom, email, telephone, message) VALUES (?, ?, ?, ?)');
-    $stmt->execute([$nom, $email, $telephone, $message]);
-} catch (PDOException $e) {
-    // Si la colonne n'existe pas, insérer sans elle (fallback pour la transition)
-    try {
-        $stmt = $pdo->prepare('INSERT INTO messages_contact (nom, email, message) VALUES (?, ?, ?)');
-        $stmt->execute([$nom, $email, $message]);
-    } catch (PDOException $e2) {
-        // Erreur de base de données, rediriger avec erreur
-        error_log('Contact form error: ' . $e2->getMessage());
-        redirect(SITE_URL . '/contact.php?error=1');
+    // Insérer avec les colonnes de base (compatible avec ancienne BD)
+    $stmt = $pdo->prepare('INSERT INTO messages_contact (nom, email, message) VALUES (?, ?, ?)');
+    $stmt->execute([$nom, $email, $message]);
+    
+    // Si on a un téléphone et la colonne existe, le mettre à jour
+    if (!empty($telephone)) {
+        try {
+            $lastId = $pdo->lastInsertId();
+            $updateStmt = $pdo->prepare('UPDATE messages_contact SET telephone = ? WHERE id = ?');
+            $updateStmt->execute([$telephone, $lastId]);
+        } catch (PDOException $e) {
+            // La colonne n'existe pas, ce n'est pas grave
+            error_log('Telephone column update failed: ' . $e->getMessage());
+        }
     }
+    
+    log_activity('Nouveau message de contact', 'De: ' . $nom . ' (' . $email . ')');
+} catch (PDOException $e) {
+    error_log('Contact form error: ' . $e->getMessage());
+    redirect(SITE_URL . '/contact.php?error=1');
 }
 
-log_activity('Nouveau message de contact', 'De: ' . $nom . ' (' . $email . ')');
 redirect(SITE_URL . '/contact.php?success=1');
-

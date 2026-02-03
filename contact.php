@@ -51,7 +51,7 @@ if (!function_exists('csrf_token')) {
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Numéro de téléphone</label>
-                        <input type="tel" name="telephone" class="form-control" placeholder="+243..." required>
+                        <input type="tel" name="telephone" class="form-control" placeholder="+243...">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Message</label>
