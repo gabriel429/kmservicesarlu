@@ -128,3 +128,8 @@ function save_partners(array $partners): bool
     $payload = json_encode(array_values($partners), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     return $payload !== false && file_put_contents($path, $payload) !== false;
 }
+
+function csrf_token_field(): string
+{
+    return '<input type="hidden" name="csrf_token" value="' . csrf_token() . '">';
+}

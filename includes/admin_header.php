@@ -32,6 +32,7 @@ $isEditor = $userRole === 'editor';
         <a class="<?= $current_admin === 'gestion_devis.php' ? 'active' : '' ?>" href="<?= SITE_URL ?>/admin/gestion_devis.php"><i class="fa-solid fa-file-signature"></i> Devis</a>
         <a class="<?= $current_admin === 'gestion_commandes.php' ? 'active' : '' ?>" href="<?= SITE_URL ?>/admin/gestion_commandes.php"><i class="fa-brands fa-whatsapp"></i> Commandes</a>
         <?php if (!$isEditor): ?>
+            <a class="<?= $current_admin === 'gestion_messages.php' ? 'active' : '' ?>" href="<?= SITE_URL ?>/admin/gestion_messages.php"><i class="fa-solid fa-envelope"></i> Messages</a>
             <a class="<?= $current_admin === 'gestion_utilisateurs.php' ? 'active' : '' ?>" href="<?= SITE_URL ?>/admin/gestion_utilisateurs.php"><i class="fa-solid fa-users"></i> Utilisateurs</a>
             <a class="<?= $current_admin === 'gestion_activite.php' ? 'active' : '' ?>" href="<?= SITE_URL ?>/admin/gestion_activite.php"><i class="fa-solid fa-clock-rotate-left"></i> Journal</a>
             <a class="<?= $current_admin === 'parametres.php' ? 'active' : '' ?>" href="<?= SITE_URL ?>/admin/parametres.php"><i class="fa-solid fa-gear"></i> Paramètres</a>
