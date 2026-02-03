@@ -1,6 +1,19 @@
 <?php
 $page_title = 'Contact - KM SERVICES';
-include __DIR__ . '/includes/header.php';
+
+// Inclure le header avec gestion d'erreur
+try {
+    include __DIR__ . '/includes/header.php';
+} catch (Exception $e) {
+    echo '<div class="alert alert-danger">Erreur de chargement: ' . htmlspecialchars($e->getMessage()) . '</div>';
+    exit;
+}
+
+// Vérifier que les fonctions existent
+if (!function_exists('csrf_token')) {
+    echo '<div class="alert alert-danger">Erreur: fonctions manquantes</div>';
+    exit;
+}
 ?>
 <section class="py-5">
     <div class="container">
