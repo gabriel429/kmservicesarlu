@@ -39,7 +39,7 @@ if (!function_exists('csrf_token')) {
                     <h6 class="fw-bold">Engagement</h6>
                     <p class="text-muted">Qualité, sécurité, innovation et respect de l’environnement guident chacune de nos interventions.</p>
                 </div>
-                <form method="post" action="api/contact.php" class="card p-4">
+                <form method="post" action="<?= SITE_URL ?>/api/contact.php" class="card p-4" id="contactForm">
                     <input type="hidden" name="csrf_token" value="<?= e(csrf_token()); ?>">
                     <div class="mb-3">
                         <label class="form-label">Nom</label>
@@ -57,8 +57,23 @@ if (!function_exists('csrf_token')) {
                         <label class="form-label">Message</label>
                         <textarea name="message" class="form-control" rows="5" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="submit-text">Envoyer</span>
+                        <span class="submit-loading d-none">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Envoi en cours...
+                        </span>
+                    </button>
                 </form>
+                
+                <script>
+                document.getElementById('contactForm').addEventListener('submit', function() {
+                    const btn = document.getElementById('submitBtn');
+                    btn.disabled = true;
+                    btn.querySelector('.submit-text').classList.add('d-none');
+                    btn.querySelector('.submit-loading').classList.remove('d-none');
+                });
+                </script>
             </div>
             <div class="col-md-6">
                 <div class="card p-4 h-100">
