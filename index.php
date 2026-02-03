@@ -43,7 +43,7 @@ include __DIR__ . '/includes/header.php';
                     <a href="<?= SITE_URL ?>/devis.php" class="btn btn-primary">Demander un devis</a>
                     <a href="<?= SITE_URL ?>/projects.php" class="btn btn-outline-light">Voir nos projets</a>
                 </div>
-                <div class="row g-3 mt-4">
+                <div class="row g-3 mt-4 d-none d-md-flex">
                     <div class="col-md-4">
                         <div class="card p-3 bg-transparent border-light text-white">
                             <h5 class="fw-bold">Qualité & sécurité</h5>
