@@ -82,12 +82,12 @@ $messages = $pdo->query('SELECT * FROM messages_contact ORDER BY date_message DE
                     </tr>
 
                     <!-- Modal pour voir le message complet -->
-                    <div class="modal fade" id="messageModal<?= $msg['id']; ?>" tabindex="-1">
+                    <div class="modal fade" id="messageModal<?= $msg['id']; ?>" tabindex="-1" aria-labelledby="messageModalLabel<?= $msg['id']; ?>">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Message de <?= e($msg['nom']); ?></h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <h5 class="modal-title" id="messageModalLabel<?= $msg['id']; ?>">Message de <?= e($msg['nom']); ?></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                                 </div>
                                 <div class="modal-body">
                                     <p><strong>De:</strong> <?= e($msg['nom']); ?></p>
