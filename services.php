@@ -1,10 +1,22 @@
 <?php
 $page_title = 'Services - KM SERVICES';
 include __DIR__ . '/includes/header.php';
+
+$services = [];
 try {
-    $services = getPDO()->query('SELECT * FROM services ORDER BY display_order ASC, id ASC')->fetchAll();
+    // Try to fetch services with ordering
+    $stmt = getPDO()->query('SELECT * FROM services ORDER BY display_order ASC, id ASC');
+    $services = $stmt->fetchAll();
 } catch (PDOException $e) {
-    $services = getPDO()->query('SELECT * FROM services ORDER BY id ASC')->fetchAll();
+    // Fallback: try without display_order column
+    try {
+        $stmt = getPDO()->query('SELECT * FROM services ORDER BY id ASC');
+        $services = $stmt->fetchAll();
+    } catch (PDOException $e2) {
+        // Log error for debugging (log to a file instead of displaying)
+        error_log('Services page error: ' . $e2->getMessage());
+        $services = [];
+    }
 }
 ?>
 <section class="py-5 bg-light">

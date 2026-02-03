@@ -162,7 +162,13 @@ include __DIR__ . '/includes/header.php';
         </div>
         <div class="row g-4">
             <?php
-            $projects = getPDO()->query("SELECT * FROM projets ORDER BY date_creation DESC LIMIT 3")->fetchAll();
+            $projects = [];
+            try {
+                $projects = getPDO()->query("SELECT * FROM projets ORDER BY date_creation DESC LIMIT 3")->fetchAll();
+            } catch (PDOException $e) {
+                error_log('Index projects section error: ' . $e->getMessage());
+                $projects = [];
+            }
             if (!$projects):
                 $projects = [
                     ['titre' => 'Résidence Moderne', 'description' => 'Construction d’une résidence haut standing.'],

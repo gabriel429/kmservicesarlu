@@ -1,7 +1,14 @@
 <?php
 $page_title = 'Projets - KM SERVICES';
 include __DIR__ . '/includes/header.php';
-$projects = getPDO()->query("SELECT p.*, s.nom_service FROM projets p LEFT JOIN services s ON s.id = p.service_id ORDER BY p.date_creation DESC")->fetchAll();
+
+$projects = [];
+try {
+    $projects = getPDO()->query("SELECT p.*, s.nom_service FROM projets p LEFT JOIN services s ON s.id = p.service_id ORDER BY p.date_creation DESC")->fetchAll();
+} catch (PDOException $e) {
+    error_log('Projects page error: ' . $e->getMessage());
+    $projects = [];
+}
 ?>
 <section class="py-5">
     <div class="container">
